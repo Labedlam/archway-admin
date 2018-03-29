@@ -1,0 +1,97 @@
+<div class="row">
+    <div class="col-sm-8">
+        <form name="productShipping.ProductShippingForm" ng-submit="productShipping.updateProductShipping(product.model)" autocomplete="off" novalidate class="form-horizontal" oc-readonly-roles="ProductAdmin" oc-pretty-submit>
+            <fieldset class="form-group">
+                <label for="ShipWeight" class="col-sm-3 control-label">Ship Weight</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <input id="ShipWeight" placeholder="(Optional)" type="number" min="0" step="any" class="form-control" ng-model="product.model.ShipWeight" />
+                        <span class="input-group-addon">lb(s)</span>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ShipHeight" class="col-sm-3 control-label">Ship Height</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <input id="ShipHeight" placeholder="(Optional)" type="number" min="0" step="any" class="form-control" ng-model="product.model.ShipHeight" />
+                        <div class="input-group-addon">in.</div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ShipWidth" class="col-sm-3 control-label">Ship Width</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <input id="ShipWidth" placeholder="(Optional)" type="number" min="0" step="any" class="form-control" ng-model="product.model.ShipWidth" />
+                        <div class="input-group-addon">in.</div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ShipLength" placeholder="(Optional)" class="col-sm-3 control-label">Ship Length</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <input id="ShipLength" type="number" min="0" step="any" class="form-control" ng-model="product.model.ShipLength" />
+                        <div class="input-group-addon">in.</div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group" oc-if-roles="SellerAddressRoles">
+                <label for="ShipFrom" class="col-sm-3 control-label">Ship From</label>
+                <div class="col-sm-9">
+                    <div class="c-typeahead">
+                        <script type="text/ng-template" id="addressResultTemplate.html">
+                            <a>
+                                <span ng-bind-html="match.model | address:'full'"></span>
+                            </a>
+                        </script>
+                        <input 
+                            type="search" 
+                            class="form-control"
+                            ng-model="productShipping.searchTerm" 
+                            ng-model-options="{debounce:300}"
+                            uib-typeahead="address as (address | address:'fullOneLine') for address in productShipping.listSellerAddresses($viewValue)"
+                            typeahead-on-select="productShipping.selectAddress($item, $model, $label, $event, product.model)"
+                            typeahead-template-url="addressResultTemplate.html"
+                            typeahead-focus-first="false"
+                            typeahead-wait-ms="300"
+                            typeahead-min-length="0"
+                            typeahead-no-results="productShipping.noResults"
+                            typeahead-loading="productShipping.loading"
+                            typeahead-append-to="'.c-typeahead__results'"
+                            ng-blur="productShipping.hideNoResults()"
+                        />
+                        <div class="c-typeahead__results">
+                            <div class="c-typeahead__results--empty" ng-if="productShipping.searchTerm && productShipping.noResults">
+                                <span>No matches found</span>
+                            </div>
+                            <div class="c-typeahead__results--empty" ng-if="!productShipping.searchTerm && productShipping.noResults">
+                                <span>
+                                    This organization does not have any seller addresses.
+                                    <a oc-if-roles="AdminAddressAdmin" ui-sref="sellerAddresses">Create one now</a>
+                                </span>
+                            </div>
+                            <div class="c-typeahead__results--loading" ng-if="productShipping.searchTerm && productShipping.loading">
+                                <div class="indicator-container">
+                                    <div class="indicator">
+                                        <div class="animation">
+                                            <div class="dot"></div>
+                                            <div class="dot"></div>
+                                            <div class="dot"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" cg-busy="productShipping.productUpdateLoading" class="btn btn-primary btn-block">Update</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
