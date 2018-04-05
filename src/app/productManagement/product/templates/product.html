@@ -38,6 +38,13 @@
                         </div>
                     </fieldset>
                     <fieldset class="form-group">
+                        <label for="keywords" class="col-sm-3 control-label">Keywords</label>
+                        <tags-input class="col-sm-9" ng-if="product.state === 'product'" ng-model="product.keywords" ng-init="product.setKeywords()"></tags-input>
+                        <!-- <div class="col-sm-9">
+                            <input id="Keywords" type="number" class="form-control" min="1" ng-model="product.model.QuantityMultiplier" required>
+                        </div> -->
+                    </fieldset>
+                    <fieldset class="form-group">
                         <label for="QuantityMultiplier" class="col-sm-3 control-label">Qty Multiplier</label>
                         <div class="col-sm-9">
                             <input id="QuantityMultiplier" type="number" class="form-control" min="1" ng-model="product.model.QuantityMultiplier" required>
