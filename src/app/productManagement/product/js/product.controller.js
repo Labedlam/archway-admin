@@ -11,7 +11,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     vm.createDefaultPrice = createDefaultPrice;
     
     vm.navigationItems = ocNavItems.Filter(ocNavItems.Product());
-
+    vm.state = $state.current.name;
     vm.fileUploadOptions = {
         keyname: 'image',
         srcKeyname: 'URL',
