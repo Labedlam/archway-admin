@@ -68,7 +68,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     function updateProduct() {
         var currentPrice = angular.copy(vm.model.DefaultPriceSchedule);
         var partial = _.pick(vm.model, ['ID', 'Name', 'Description', 'QuantityMultiplier', 'Inventory', 'Active']);
-        var partialXP = _.pick(vm.model.xp, ['Featured']);
+        var partialXP = _.pick(vm.model.xp, ['Featured', 'ApprovalRequired']);
         partial.xp = partialXP;
         if(vm.keywords.length) partial.xp.Keywords = getKeywords();
         
