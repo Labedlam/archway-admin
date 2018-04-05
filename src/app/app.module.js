@@ -18,6 +18,7 @@ angular.module('orderCloud', [
         'angularPayments',
         'ordercloud-angular-sdk',
         'dndLists',
-        'textAngular'
+        'textAngular',
+        'ngTagsInput'
     ]
 );
