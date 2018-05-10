@@ -11,7 +11,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     vm.createDefaultPrice = createDefaultPrice;
     
     vm.navigationItems = ocNavItems.Filter(ocNavItems.Product());
-
+    vm.state = $state.current.name;
     vm.fileUploadOptions = {
         keyname: 'image',
         srcKeyname: 'URL',
@@ -23,6 +23,27 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
         addText: 'Upload an image',
         replaceText: 'Replace'
     };
+
+    vm.descriptionToolbar = [
+        ['html', 'bold', 'italics', 'underline', 'strikeThrough'],
+        ['h1', 'h2', 'h3', 'p'],
+        ['ul', 'ol'],
+        ['insertLink', 'insertImage', 'insertVideo']
+    ];
+
+    vm.setKeywords = _setKeywords;
+    
+    function _setKeywords(){
+        if(vm.model.xp && vm.model.xp.Keywords){
+           vm.keywords = _.map(vm.model.xp.Keywords, function(keyword){
+            return { text : keyword} 
+           });
+        }else{
+            if(!vm.model.xp)vm.model.xp = { }
+            vm.model.xp.Keywords = [];
+            vm.keywords  = []; 
+        }
+    }
 
     function patchImage(imageXP) {
         return OrderCloudSDK.Products.Patch(vm.model.ID, {
@@ -37,19 +58,20 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
         });
     }
 
-    vm.descriptionToolbar = [
-        ['html', 'bold', 'italics', 'underline', 'strikeThrough'],
-        ['h1', 'h2', 'h3', 'p'],
-        ['ul', 'ol'],
-        ['insertLink', 'insertImage', 'insertVideo']
-    ];
+    function getKeywords (){
+        //returns an array of keywords
+        return _.map(vm.keywords, function(keyword){
+            return keyword.text;    
+        })
+    }
 
     function updateProduct() {
         var currentPrice = angular.copy(vm.model.DefaultPriceSchedule);
         var partial = _.pick(vm.model, ['ID', 'Name', 'Description', 'QuantityMultiplier', 'Inventory', 'Active']);
         var partialXP = _.pick(vm.model.xp, ['Featured', 'ApprovalRequired']);
         partial.xp = partialXP;
-
+        if(vm.keywords.length) partial.xp.Keywords = getKeywords();
+        
         vm.loading = OrderCloudSDK.Products.Patch(SelectedProduct.ID, partial)
             .then(function (data) {
 
@@ -105,6 +127,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
                 });
             });
     }
+
 
     $rootScope.$on('OC:DefaultPriceUpdated', function (event, newID) {
         vm.model.DefaultPriceScheduleID = newID;
