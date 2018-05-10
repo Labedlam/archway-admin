@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .controller('UsersCtrl', UsersController)
 ;
 
-function UsersController($state, $stateParams, toastr, $ocMedia, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters) {
+function UsersController($state, $stateParams, $window, toastr, $ocMedia, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters) {
     var vm = this;
     vm.list = UserList;
     vm.parameters = Parameters;
@@ -83,6 +83,18 @@ function UsersController($state, $stateParams, toastr, $ocMedia, OrderCloudSDK, 
                 vm.list.Items.splice(scope.$index, 1);
                 vm.list.Meta.TotalCount--;
                 vm.list.Meta.ItemRange[1]--;
+            });
+    };
+
+    vm.impersonateUser = function(scope) {
+        let impersonation = {
+            clientID: '68C34D8F-801F-47F5-9E3B-E8CB7339F209',
+            roles: ['AddressReader', 'BuyerReader', 'MeAddressAdmin', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'Shopper']
+        };
+        return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)
+            .then(function(data) {
+                let buyerAppUrl = `https://archway-ppg-test.herokuapp.com/punchout?token=${data.access_token}`;
+                window.open(buyerAppUrl, '_blank');
             });
     };
 }

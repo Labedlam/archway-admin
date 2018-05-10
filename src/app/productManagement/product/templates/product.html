@@ -38,9 +38,25 @@
                         </div>
                     </fieldset>
                     <fieldset class="form-group">
+                        <label for="ProductComments" class="col-sm-3 control-label">Comments</label>
+                        <div class="col-sm-9">
+                            <input id="ProductComments" type="text" class="form-control" ng-model="product.model.xp.Comments" required>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="keywords" class="col-sm-3 control-label">Keywords</label>
+                        <tags-input class="col-sm-9" ng-if="product.state === 'product'" ng-model="product.keywords" ng-init="product.setKeywords()"></tags-input>
+                    </fieldset>
+                    <fieldset class="form-group">
                         <label for="QuantityMultiplier" class="col-sm-3 control-label">Qty Multiplier</label>
                         <div class="col-sm-9">
                             <input id="QuantityMultiplier" type="number" class="form-control" min="1" ng-model="product.model.QuantityMultiplier" required>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="UnitOfMeasure" class="col-sm-3 control-label">Unit of Measure</label>
+                        <div class="col-sm-9">
+                            <input id="UnitOfMeasure" type="text" class="form-control" ng-model="product.model.xp.UnitOfMeasure" required>
                         </div>
                     </fieldset>
                     <fieldset class="form-group">
@@ -93,9 +109,9 @@
                 <oc-file-upload file-upload-model="product.model.xp" file-upload-options="product.fileUploadOptions"></oc-file-upload>
             </div>
         </div>
-        <div class="visible-xs" oc-if-roles="ProductAdmin">
+        <!-- <div class="visible-xs" oc-if-roles="ProductAdmin">
             <hr>
             <button type="button" class="btn btn-danger btn-block" ng-click="product.deleteProduct()"><i class="fa fa-trash-o"></i> Delete Product</button>
-        </div>
+        </div> -->
     </div>
 </article>
