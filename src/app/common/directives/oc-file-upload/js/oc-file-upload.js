@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .directive('ocFileUpload', ordercloudFileUpload)
 ;
 
-function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
+function ordercloudFileUpload($uibModal, $ocFiles, $resource, integrationurl, OrderCloudSDK, ocConfirm) {
     var directive = {
         scope: {
             model: '<fileUploadModel',
@@ -16,7 +16,7 @@ function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
     };
 
     function link(scope, element, attrs, formCtrl) {
-        if (!ocFiles.Enabled()) return;
+        // if (!ocFiles.Enabled()) return;
         (function mergeOptions() {
             var globalOptions = $ocFiles.GetFileUploadOptions();
             scope.fileUploadOptions = scope.options ?  _.merge({}, globalOptions, scope.options) : globalOptions;
@@ -95,9 +95,14 @@ function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
         };
 
         function callOnUpdate() {
-            if (scope.fileUploadOptions.onUpdate && (typeof scope.fileUploadOptions.onUpdate == 'function')) scope.fileUploadOptions.onUpdate(scope.fileUploadModel);
-            initModelValue();
-
+            let body = {
+                
+            };
+            //URL will look like this: `${integrationurl}/${scope.fileUploadModel[i].StorageName}/api/productimage/${productid}`
+            return $resource( `${integrationurl}/productimage/`, {}, { send: { method: 'POST', headers: { 'Authorization': `Bearer ${OrderCloudSDK.GetToken()}` } } } ).send( body ).$promise.then( () =>{
+                initModelValue();
+            });
+            // if (scope.fileUploadOptions.onUpdate && (typeof scope.fileUploadOptions.onUpdate == 'function')) scope.fileUploadOptions.onUpdate(scope.fileUploadModel);
         }
 
         function dirtyModel() {

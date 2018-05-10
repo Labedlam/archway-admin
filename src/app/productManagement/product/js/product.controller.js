@@ -9,6 +9,11 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     vm.updateProduct = updateProduct;
     vm.deleteProduct = deleteProduct;
     vm.createDefaultPrice = createDefaultPrice;
+    // if (!vm.model.xp.Images || !vm.model.xp.Images.length) vm.model.xp.Images = [
+    //     {
+    //         StorageName: vm.model.ID + 'pic'
+    //     }
+    // ];
     
     vm.navigationItems = ocNavItems.Filter(ocNavItems.Product());
     vm.state = $state.current.name;
@@ -36,10 +41,10 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     function _setKeywords(){
         if(vm.model.xp && vm.model.xp.Keywords){
            vm.keywords = _.map(vm.model.xp.Keywords, function(keyword){
-            return { text : keyword} 
+            return { text : keyword}; 
            });
         }else{
-            if(!vm.model.xp)vm.model.xp = { }
+            if(!vm.model.xp)vm.model.xp = { };
             vm.model.xp.Keywords = [];
             vm.keywords  = []; 
         }
@@ -62,7 +67,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
         //returns an array of keywords
         return _.map(vm.keywords, function(keyword){
             return keyword.text;    
-        })
+        });
     }
 
     function updateProduct() {

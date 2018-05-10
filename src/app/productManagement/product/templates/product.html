@@ -60,17 +60,6 @@
                         </div>
                     </fieldset>
                     <fieldset class="form-group">
-                        <label for="DefaultPrice" class="col-sm-3 control-label">Default Price</label>
-                        <div class="col-sm-9">
-                            <p class="form-control-static">
-                                <span ng-if="!product.model.DefaultPriceScheduleID" oc-if-roles="!ProductAdmin && !PriceScheduleAdmin" class="text-muted">No default price</span>
-                                <a ng-if="!product.model.DefaultPriceScheduleID" oc-if-roles="PriceScheduleAdmin" ng-click="product.createDefaultPrice()">Add a default price</a>
-                                <a ng-if="product.model.DefaultPriceScheduleID" oc-if-roles="ProductAdmin" ui-sref=".pricing({pricescheduleid: product.model.DefaultPriceScheduleID})"><b>{{product.model.DefaultPriceSchedule.PriceBreaks[0].Price | currency}}</b></a>
-                                <b ng-if="product.model.DefaultPriceScheduleID" oc-if-roles="!ProductAdmin" class="text-primary">{{product.model.DefaultPriceSchedule.PriceBreaks[0].Price | currency}}</b>
-                            </p>
-                        </div>
-                    </fieldset>
-                    <fieldset class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
                             <div class="checkbox" oc-readonly-roles="InventoryAdmin">
                                 <label for="InventoryEnabled">
@@ -98,20 +87,12 @@
                         <div class="col-sm-offset-3 col-sm-9">
                             <button type="submit" cg-busy="product.productUpdateLoading" ng-disabled="product.form.$invalid" class="btn btn-primary btn-block">Update Product Info</button>
                         </div>
-                        <div class="col-sm-offset-3 col-sm-9 hidden-xs">
-                            <hr>
-                            <button type="button" class="btn btn-danger btn-block" ng-click="product.deleteProduct()">Delete Product</button>
-                        </div>
                     </fieldset>
                 </form>
             </div>
             <div class="col-sm-4">
-                <oc-file-upload file-upload-model="product.model.xp" file-upload-options="product.fileUploadOptions"></oc-file-upload>
+                <oc-file-upload file-upload-model="product.model.xp.Images[0][product.model.ID + 'pic']" file-upload-options="product.fileUploadOptions"></oc-file-upload>
             </div>
         </div>
-        <!-- <div class="visible-xs" oc-if-roles="ProductAdmin">
-            <hr>
-            <button type="button" class="btn btn-danger btn-block" ng-click="product.deleteProduct()"><i class="fa fa-trash-o"></i> Delete Product</button>
-        </div> -->
     </div>
 </article>
