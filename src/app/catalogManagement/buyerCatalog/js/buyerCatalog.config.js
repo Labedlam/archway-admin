@@ -31,7 +31,10 @@ function BuyerCatalogConfig($stateProvider) {
                     return ocCatalogCategories.Assignments.Get($stateParams.catalogid, $stateParams.buyerid);
                 },
                 CategoryList: function($stateParams, ocCatalogCategories) {
-                    return ocCatalogCategories.GetAll($stateParams.catalogid);
+                    let parameters = {
+                        catalogID: $stateParams.catalogid
+                    };
+                    return ocCatalogCategories.GetAll(parameters);
                 },
                 Tree: function(CategoryList, ocCatalogTree, ocCatalogCategories, CategoryAssignments, CatalogAssignment) {
                     return ocCatalogTree.Get(ocCatalogCategories.Assignments.Map(CategoryList, CatalogAssignment.ViewAllCategories ? true : CategoryAssignments));

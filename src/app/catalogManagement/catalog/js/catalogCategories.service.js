@@ -13,12 +13,13 @@ function OrderCloudCatalogCategoriesSerivce($q, OrderCloudSDK) {
         }
     };
 
-    function _getAllCategories(catalogID) {
+    function _getAllCategories(parameters) {
         var options = {
             pageSize: 100,
-            depth: 'all'
+            depth: 'all',
+            filters: parameters.filters
         };
-        return OrderCloudSDK.Categories.List(catalogID, options)
+        return OrderCloudSDK.Categories.List(parameters.catalogID, options)
             .then(function(data1) {
                 var df = $q.defer(),
                     queue = [],
@@ -27,7 +28,7 @@ function OrderCloudCatalogCategoriesSerivce($q, OrderCloudSDK) {
                 while(currentPage < totalPages) {
                     currentPage++;
                     options.page = currentPage;
-                    queue.push(OrderCloudSDK.Categories.List(catalogID, options));
+                    queue.push(OrderCloudSDK.Categories.List(parameters.catalogID, options));
                 }
                 $q.all(queue)
                     .then(function(results) {

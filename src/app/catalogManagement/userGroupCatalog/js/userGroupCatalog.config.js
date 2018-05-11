@@ -34,7 +34,10 @@ function UserGroupCatalogConfig($stateProvider) {
                     return ocCatalogCategories.Assignments.Get($stateParams.catalogid, $stateParams.buyerid, $stateParams.usergroupid);
                 },
                 CategoryList: function($stateParams, ocCatalogCategories) {
-                    return ocCatalogCategories.GetAll($stateParams.catalogid);
+                    let parameters = {
+                        catalogID: $stateParams.catalogid
+                    };
+                    return ocCatalogCategories.GetAll(parameters);
                 },
                 Tree: function(CategoryList, ocCatalogTree, ocCatalogCategories, CatalogAssignment, BuyerCategoryAssignments, UserGroupCategoryAssignments) {
                     var buyerMappedData = ocCatalogCategories.Assignments.Map(CategoryList, CatalogAssignment.ViewAllCategories ? true : BuyerCategoryAssignments, true);

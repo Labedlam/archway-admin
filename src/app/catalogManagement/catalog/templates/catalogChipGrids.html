@@ -1,0 +1,11 @@
+<article>
+    <header class="l-page-header">
+        <h3 class="l-page-header__title">
+            Chip Grids <br>
+            <small class="text-muted">Select a Chip Grid to manage products.</small>
+        </h3>
+    </header>
+    <div ng-repeat="grid in catalogChipGrids.grids">
+        <button class="btn btn-link" ui-sref="chipGrid({categoryid: grid.ID})">{{grid.Name}}</button> <small class="text-muted">({{grid.ChildCount}})</small>
+    </div>
+</article>
