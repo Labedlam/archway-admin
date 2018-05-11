@@ -132,10 +132,10 @@ function CatalogConfig($stateProvider) {
                             let productListQueue = [];
                             _.each(categories, function(category) {
                                 productListQueue.push( function() {
-                                    return OrderCloudSDK.Products.List({catalogID: $stateParams.catalogid, categoryID: category.ID, pageSize: 100})
-                                        .then((products) => {
-                                            category.RowCount = Math.ceil(products.Meta.TotalCount / Number(category.xp.Columns)); 
-                                            category.ProductList = products.Items;
+                                    return OrderCloudSDK.Categories.ListProductAssignments($stateParams.catalogid, {categoryID: category.ID, pageSize: 100})
+                                        .then((assignments) => {
+                                            category.RowCount = Math.ceil(assignments.Meta.TotalCount / Number(category.xp.Columns)); 
+                                            category.ProductList = assignments.Items;
                                             return category;
                                         });
                                 }() );

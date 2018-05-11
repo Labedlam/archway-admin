@@ -8,7 +8,7 @@ function CatalogChipGridsController(Parameters, ChipGrids) {
     vm.parameters = Parameters;
 }
 
-function CatalogChipGridController(OrderCloudSDK, $q, $timeout, Parameters, SelectedCategory, GridSections) {
+function CatalogChipGridController(OrderCloudSDK, $q, $timeout, toastr, Parameters, SelectedCategory, GridSections) {
     let vm = this;
     vm.parameters = Parameters;
     vm.chipGrid = SelectedCategory;
@@ -19,7 +19,7 @@ function CatalogChipGridController(OrderCloudSDK, $q, $timeout, Parameters, Sele
 
     vm.setSection = function(section) {
         vm.selectedSection = section;
-        vm.initialPositions = _.map(vm.selectedSection.ProductList, 'ID');
+        vm.initialPositions = _.map(vm.selectedSection.Assignments, 'ProductID');
         setGrid(vm.selectedSection);
     };
 
@@ -42,6 +42,7 @@ function CatalogChipGridController(OrderCloudSDK, $q, $timeout, Parameters, Sele
 
     vm.saveSection = function() {
         let updateQueue = [];
+        vm.loading = {backdrop:false};
         _.each(vm.updatedPositions, function(productID, index) {
             if (vm.initialPositions.indexOf(productID) != index) updateQueue.push(productID);
         });
@@ -49,13 +50,15 @@ function CatalogChipGridController(OrderCloudSDK, $q, $timeout, Parameters, Sele
             let saveAssignmentsQueue = [];
             _.each(updateQueue, function(productID, key) {
                 let assignment = {
-                    CategoryID: vm.parameters.categoryid,
+                    CategoryID: vm.selectedSection.ID,
                     ProductID: productID,
                     ListOrder: key + 1
                 };
                 saveAssignmentsQueue.push(OrderCloudSDK.Categories.SaveProductAssignment(vm.parameters.catalogid, assignment));
             });
-            return $q.all(saveAssignmentsQueue);
+            vm.loading.promise = $q.all(saveAssignmentsQueue).then( () => {
+                toastr.success('Layout saved for ' + vm.selectedSection.Name);
+            });
         }
     };
 }
