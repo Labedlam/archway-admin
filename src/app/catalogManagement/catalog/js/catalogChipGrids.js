@@ -28,20 +28,16 @@ function CatalogChipGridController(OrderCloudSDK, $q, $timeout, Parameters, Sele
             $('.gridly').gridly({
                 columns: Number(section.xp.Columns) * 2,
                 callbacks: {
-                    reordering: function() {
-    
-                    },
                     reordered: function($elements) {
                         vm.updatedPositions = [];
                         angular.forEach($elements, function(elem) {
                             vm.updatedPositions.push(elem.innerText);  
                         });
-                        console.log(vm.updatedPositions);
                     }
                 }
               });
             $('.gridly').gridly('draggable', 'on');
-        });
+        }, 50);
     }
 
     vm.saveSection = function() {

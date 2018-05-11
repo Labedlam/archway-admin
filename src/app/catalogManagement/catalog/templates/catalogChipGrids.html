@@ -6,6 +6,6 @@
         </h3>
     </header>
     <div ng-repeat="grid in catalogChipGrids.grids">
-        {{grid.Name}} <small class="text-muted">({{grid.ChildCount}})</small>
+        <button class="btn btn-link" ui-sref="chipGrid({categoryid: grid.ID})">{{grid.Name}}</button> <small class="text-muted">({{grid.ChildCount}})</small>
     </div>
 </article>
