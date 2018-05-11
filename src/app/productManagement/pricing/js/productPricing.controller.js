@@ -8,9 +8,6 @@ function ProductPricingController($q, $rootScope, $stateParams, $uibModal, toast
     vm.listAssignments = AssignmentData;
     var isDefault;
 
-    vm.noPricesSet = !_.keys(vm.listAssignments).length;
-    vm.noOverridesSet = _.keys(vm.listAssignments).length === 1 && SelectedProduct.DefaultPriceScheduleID;
-
     vm.selectPrice = function (scope) {
         vm.loadingPrice = ocProductPricing.AssignmentDataDetail(vm.listAssignments, scope.assignment.PriceSchedule.ID)
             .then(function (data) {
