@@ -119,6 +119,15 @@ function OrderCloudNavItemsService(ocRoles) {
                     Items: ['BuyerRoles', 'CatalogAdmin'],
                     Any: false
                 }
+            },
+            {
+                icon: 'fa-th-large',
+                state: 'chipGrids',
+                name: 'Chip Grids',
+                roles: {
+                    Items: ['CategoryRoles'],
+                    Any: false
+                }
             }
         ];
     }

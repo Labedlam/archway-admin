@@ -34,7 +34,10 @@ function ProductCategoriesConfig($stateProvider) {
                     return ocProductCategories.Assignments.Get($stateParams.catalogid, $stateParams.productid);
                 },
                 CategoryList: function($stateParams, ocCatalogCategories) {
-                    return ocCatalogCategories.GetAll($stateParams.catalogid);
+                    let parameters = {
+                        catalogID: $stateParams.catalogid
+                    };
+                    return ocCatalogCategories.GetAll(parameters);
                 },
                 Tree: function(CategoryList, ocCatalogTree, ocCatalogCategories, CategoryAssignments) {
                     return ocCatalogTree.Get(ocCatalogCategories.Assignments.Map(CategoryList, CategoryAssignments));
