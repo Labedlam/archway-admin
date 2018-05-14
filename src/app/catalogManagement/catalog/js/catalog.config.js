@@ -49,7 +49,10 @@ function CatalogConfig($stateProvider) {
             },
             resolve: {
                 CategoryList: function($stateParams, ocCatalogCategories) {
-                    return ocCatalogCategories.GetAll($stateParams.catalogid);
+                    let parameters = {
+                        catalogID: $stateParams.catalogid
+                    };
+                    return ocCatalogCategories.GetAll(parameters);
                 },
                 Tree: function(CategoryList, ocCatalogTree) {
                     return ocCatalogTree.Get(CategoryList);
@@ -76,13 +79,68 @@ function CatalogConfig($stateProvider) {
                 Parameters: function($stateParams, ocParameters) {
                     return ocParameters.Get($stateParams);
                 },
-                CurrentAssignments: function($q, $stateParams, ocCatalog) {
+                CurrentAssignments: function($stateParams, ocCatalog) {
                     return ocCatalog.Products.GetAssignments($stateParams.categoryid, $stateParams.catalogid);
                 },
                 ProductList: function(OrderCloudSDK, ocCatalog, Parameters, CurrentAssignments) {
                     return OrderCloudSDK.Products.List(Parameters)
                         .then(function(data) {
                             return ocCatalog.Products.MapAssignments(CurrentAssignments, data);
+                        });
+                }
+            }
+        })
+        .state('chipGrids', {
+            parent: 'catalog',
+            url: '/chipgrids',
+            templateUrl: 'catalogManagement/catalog/templates/catalogChipGrids.html',
+            controller: 'CatalogChipGridsCtrl',
+            controllerAs: 'catalogChipGrids',
+            resolve: {
+                Parameters: function($stateParams, ocParameters) {
+                    return ocParameters.Get($stateParams);
+                },
+                ChipGrids: function($stateParams, Parameters, ocCatalogCategories) {
+                    Parameters.catalogID = $stateParams.catalogid;
+                    Parameters.filters = {
+                        ['xp.IsChipGrid']: true
+                    };
+                    return ocCatalogCategories.GetAll(Parameters);
+                }
+            }
+        })
+        .state('chipGrid', {
+            parent: 'catalog',
+            url: '/chipgrid/:categoryid',
+            templateUrl: 'catalogManagement/catalog/templates/catalogChipGrid.html',
+            controller: 'CatalogChipGridCtrl',
+            controllerAs: 'catalogChipGrid',
+            resolve: {
+                Parameters: function($stateParams, ocParameters) {
+                    return ocParameters.Get($stateParams);
+                },
+                SelectedCategory: function($stateParams, OrderCloudSDK) {
+                    return OrderCloudSDK.Categories.Get($stateParams.catalogid, $stateParams.categoryid);
+                },
+                GridSections: function($q, $stateParams, OrderCloudSDK, Parameters, ocCatalogCategories) {
+                    Parameters.catalogID = $stateParams.catalogid;
+                    Parameters.filters= {
+                        ParentID: $stateParams.categoryid
+                    };
+                    return ocCatalogCategories.GetAll(Parameters)
+                        .then( (categories) => {
+                            let productListQueue = [];
+                            _.each(categories, function(category) {
+                                productListQueue.push( function() {
+                                    return OrderCloudSDK.Categories.ListProductAssignments($stateParams.catalogid, {categoryID: category.ID, pageSize: 100})
+                                        .then((assignments) => {
+                                            category.RowCount = Math.ceil(assignments.Meta.TotalCount / Number(category.xp.Columns)); 
+                                            category.ProductList = assignments.Items;
+                                            return category;
+                                        });
+                                }() );
+                            });
+                            return $q.all(productListQueue);
                         });
                 }
             }
