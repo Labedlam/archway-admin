@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .controller('ProductCtrl', ProductController);
 
-function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderCloudSDK, ocProducts, ocNavItems, ocRelatedProducts, ocProductPricing, SelectedProduct) {
+function ProductController($exceptionHandler, $rootScope, $state, toastr, imagestorageurl, OrderCloudSDK, ocProducts, ocNavItems, ocRelatedProducts, ocProductPricing, SelectedProduct) {
     var vm = this;
     vm.model = angular.copy(SelectedProduct);
     vm.productName = angular.copy(SelectedProduct.Name);
@@ -9,11 +9,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     vm.updateProduct = updateProduct;
     vm.deleteProduct = deleteProduct;
     vm.createDefaultPrice = createDefaultPrice;
-    // if (!vm.model.xp.Images || !vm.model.xp.Images.length) vm.model.xp.Images = [
-    //     {
-    //         StorageName: vm.model.ID + 'pic'
-    //     }
-    // ];
+    vm.defaultImage = vm.model.xp && vm.model.xp.Images && vm.model.xp.Images.length ? `${imagestorageurl}${vm.model.xp.Images[0].StorageName}` : '';
     
     vm.navigationItems = ocNavItems.Filter(ocNavItems.Product());
     vm.state = $state.current.name;

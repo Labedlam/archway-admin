@@ -89,24 +89,28 @@ function getConstants() {
     var environment = process.env.environment || constants.environment;
     switch (environment) {
         case 'local':
-            result.integrationurl = 'https://archwayppgtest.blob.core.windows.net/webimages';
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'http://core.four51.com:11629';
             result.apiurl = 'http://core.four51.com:9002';
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/';
             break;
         case 'qa':
-            result.integrationurl = 'https://archwayppgtest.blob.core.windows.net/webimages';
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://qaauth.ordercloud.io';
             result.apiurl = 'https://qaapi.ordercloud.io';
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/';
             break;
         case 'staging':
-            result.integrationurl = 'https://archwayppgtest.blob.core.windows.net/webimages';
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://stagingauth.ordercloud.io';
             result.apiurl = 'https://stagingapi.ordercloud.io';
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/';
             break;
         default:
-            result.integrationurl = 'https://archwayppg.blob.core.windows.net/webimages';
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://auth.ordercloud.io';
             result.apiurl = 'https://api.ordercloud.io';
+            result.devapiurl = 'https://archway-ppg.azurewebsites.net/';
             break;
     }
     if (process.env.apiurl && process.env.authurl) {

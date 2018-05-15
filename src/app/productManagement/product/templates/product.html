@@ -86,7 +86,8 @@
                 </form>
             </div>
             <div class="col-sm-4">
-                <oc-file-upload file-upload-model="product.model.xp.Images[0][product.model.ID + 'pic']" file-upload-options="product.fileUploadOptions"></oc-file-upload>
+                <img style="max-width: 250px; height: auto;" ng-src="{{product.defaultImage}}">
+                <oc-file-upload file-upload-model="product.model.xp" file-upload-options="product.fileUploadOptions"></oc-file-upload>
             </div>
         </div>
     </div>
