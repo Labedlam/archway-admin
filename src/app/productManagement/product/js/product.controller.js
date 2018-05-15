@@ -14,13 +14,13 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, images
     vm.navigationItems = ocNavItems.Filter(ocNavItems.Product());
     vm.state = $state.current.name;
     vm.fileUploadOptions = {
-        keyname: 'image',
+        keyname: 'Images',
         srcKeyname: 'URL',
         folder: null,
         extensions: 'jpg, png, gif, jpeg, tiff',
         invalidExtensions: null,
         onUpdate: patchImage,
-        multiple: false,
+        multiple: true,
         addText: 'Upload an image',
         replaceText: 'Replace'
     };

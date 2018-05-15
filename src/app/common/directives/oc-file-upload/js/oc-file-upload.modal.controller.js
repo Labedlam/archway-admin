@@ -2,12 +2,13 @@ angular.module('orderCloud')
     .controller('FileUploadModalCtrl', FileUploadModalController)
 ;
 
-function FileUploadModalController($uibModalInstance, ocFiles, FileUploadOptions, CurrentValue) {
+function FileUploadModalController($uibModalInstance, ocFiles, imagestorageurl, FileUploadOptions, CurrentValue) {
     var vm = this;
     vm.additionalFields = angular.copy(FileUploadOptions.additionalFields);
     vm.invalidExtension = false;
     vm.options = FileUploadOptions;
     vm.model = angular.copy(CurrentValue);
+    vm.defaultImage = `${imagestorageurl}${vm.model[0].StorageName}`;
 
     var allowed = parseExtensions(FileUploadOptions.extensions);
     var notAllowed = parseExtensions(FileUploadOptions.invalidExtensions);

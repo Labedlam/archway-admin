@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .directive('ocFileUpload', ordercloudFileUpload)
 ;
 
-function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCloudSDK, ocConfirm) {
+function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCloudSDK, ocConfirm, imagestorageurl) {
     var directive = {
         scope: {
             model: '<fileUploadModel',
@@ -16,6 +16,7 @@ function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCl
     };
 
     function link(scope, element, attrs, formCtrl) {
+        scope.imagestorageurl = imagestorageurl;
         // if (!ocFiles.Enabled()) return;
         (function mergeOptions() {
             var globalOptions = $ocFiles.GetFileUploadOptions();

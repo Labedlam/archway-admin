@@ -12,7 +12,7 @@
             <div ng-class="{'col-sm-9': fileUploadModal.additionalFields.length, 'col-sm-8 col-sm-offset-2':!fileUploadModal.additionalFields.length}">
                 <div class="c-file-upload" ng-class="{'has-error': fileUploadModal.invalidExtension}">
                     <figure class="thumbnail" ng-if="fileUploadModal.model[fileUploadModal.options.srcKeyname]">
-                        <img class="img-responsive" ng-src="{{fileUploadModal.model[fileUploadModal.options.srcKeyname]}}" alt="Product Image">
+                        <img class="img-responsive" ng-src="{{fileUploadModal.defaultImage}}" alt="Product Image">
                     </figure>
                     <div>
                         <div class="input-group">
