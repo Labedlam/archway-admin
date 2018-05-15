@@ -28,7 +28,12 @@ function BaseController(CurrentUser, $state) {
     };
 
     vm.selectNavItem = function (stateName) {
-        $state.go(stateName);
+        if(stateName === 'buyers'){
+            $state.go('buyer', {buyerid: 'ppg'});
+        }
+        else{
+            $state.go(stateName);
+        }
         $('#GlobalNav').offcanvas('hide'); //hide jasny offcanvas
     };
 }
