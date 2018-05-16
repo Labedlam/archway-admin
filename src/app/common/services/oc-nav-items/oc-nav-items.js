@@ -119,6 +119,15 @@ function OrderCloudNavItemsService(ocRoles) {
                     Items: ['BuyerRoles', 'CatalogAdmin'],
                     Any: false
                 }
+            },
+            {
+                icon: 'fa-th-large',
+                state: 'chipGrids',
+                name: 'Chip Grids',
+                roles: {
+                    Items: ['CategoryRoles'],
+                    Any: false
+                }
             }
         ];
     }
@@ -182,7 +191,7 @@ function OrderCloudNavItemsService(ocRoles) {
             {
                 icon: 'fa-users',
                 state: 'userGroups',
-                name: 'User Groups',
+                name: 'Asset-Collections',
                 activeWhen: ['userGroups', 'userGroup*'],
                 roles: {
                     Items: ['UserGroupRoles'],
