@@ -10,7 +10,11 @@
             <section class='example' cg-busy="catalogChipGrid.loading">
                 <div class='gridly'>
                     <div ng-repeat="chip in catalogChipGrid.selectedSection.ProductList" class='brick small'>
-                        {{chip.ProductID}}
+                        <p class="text-center">
+                            {{chip.ProductID}}
+                        </p>
+                        <br/>
+                        <p class="text-center text-muted text-small">{{chip.ListOrder}}</p>
                     </div>
                 </div>
                 <button class="btn btn-primary btn-md" ng-click="catalogChipGrid.saveSection()">Save Section</button>
