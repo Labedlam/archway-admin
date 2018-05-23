@@ -31,6 +31,7 @@ function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCl
                 templateUrl: 'common/directives/oc-file-upload/templates/oc-file-upload.modal.html',
                 controller: 'FileUploadModalCtrl',
                 controllerAs: 'fileUploadModal',
+                size: 'lg',
                 resolve: {
                     CurrentValue: function() {
                         return scope.fileUploadOptions.multiple ? (index > -1 ? scope.fileUploadModel[scope.fileUploadOptions.keyname][index] : {}) : scope.fileUploadModel[scope.fileUploadOptions.keyname][0];

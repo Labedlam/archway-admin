@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .controller('FileUploadModalCtrl', FileUploadModalController)
 ;
 
-function FileUploadModalController($resource, $http, devapiurl, OrderCloudSDK, $uibModalInstance, imagestorageurl, FileUploadOptions, CurrentValue, Product) {
+function FileUploadModalController($http, devapiurl, OrderCloudSDK, $uibModalInstance, imagestorageurl, FileUploadOptions, CurrentValue, Product) {
     var vm = this;
     vm.additionalFields = angular.copy(FileUploadOptions.additionalFields);
     vm.invalidExtension = false;
@@ -53,6 +53,7 @@ function FileUploadModalController($resource, $http, devapiurl, OrderCloudSDK, $
         var fileName = event.target.files[0].name, 
             valid = true, 
             ext;
+        vm.file = event.target.files[0];
 
         if ((allowed.Extensions.length || allowed.Types.length) && fileName) {
             ext = fileName.split('.').pop().toLowerCase();
@@ -64,37 +65,6 @@ function FileUploadModalController($resource, $http, devapiurl, OrderCloudSDK, $
         }
         if (valid) {
             vm.invalidExtension = false;
-            //TEST: 01215554
-            // let body = `name="imageUpload";filename="${event.target.files[0].name}"`;
-            let formBody = new FormData();
-            formBody.append('imageUpload', event.target.files[0], event.target.files[0].name);
-            // return $resource( 
-            //     `${devapiurl}/productimage/${vm.product.ID}`, 
-            //     {}, 
-            //     { 
-            //         send: { 
-            //             method: 'POST', 
-            //             headers: { 
-            //                 'Authorization': `Bearer ${OrderCloudSDK.GetToken()}`,
-            //                 'Content-Type': 'multipart/form-data;boundry=""'
-            //             }
-            //         } 
-            //     } ).send( formBody ).$promise.then( data => {
-            //     console.log('data', data);
-            // });
-
-
-            return $http({
-                url: `${devapiurl}/productimage/${vm.product.ID}`,
-                method: 'POST',
-                data: formBody,
-                headers: {
-                    'Authorization': `Bearer ${OrderCloudSDK.GetToken()}`,
-                    'Content-Type': undefined
-                }
-            }).then(data => {
-                console.log('data', data);
-            });
         } else {
             vm.invalidExtension = true;
             var input;
@@ -105,7 +75,22 @@ function FileUploadModalController($resource, $http, devapiurl, OrderCloudSDK, $
     }
 
     vm.submit = function() {
-        $uibModalInstance.close(vm.model);
+        vm.product.xp.Images = [];
+        return OrderCloudSDK.Products.Patch( vm.product.ID, { xp: vm.product.xp } ).then( prod => {
+            let formBody = new FormData();
+            formBody.append('imageUpload', vm.file, vm.file.name);
+            return $http({
+                url: `${devapiurl}/productimage/${vm.product.ID}`,
+                method: 'POST',
+                data: formBody,
+                headers: {
+                    'Authorization': `Bearer ${OrderCloudSDK.GetToken()}`,
+                    'Content-Type': undefined
+                }
+            }).then(data => {
+                $uibModalInstance.close(vm.model);
+            });
+        });
     };
 
     vm.cancel = function() {
