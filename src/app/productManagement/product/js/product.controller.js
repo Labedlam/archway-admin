@@ -15,12 +15,12 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, images
     vm.state = $state.current.name;
     vm.fileUploadOptions = {
         keyname: 'Images',
-        srcKeyname: 'URL',
+        src: imagestorageurl,
         folder: null,
         extensions: 'jpg, png, gif, jpeg, tiff',
         invalidExtensions: null,
         onUpdate: patchImage,
-        multiple: true,
+        multiple: false,
         addText: 'Upload an image',
         replaceText: 'Replace'
     };
