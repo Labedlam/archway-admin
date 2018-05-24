@@ -101,7 +101,7 @@
                             <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':user.Active}"></i>
                         </td>
                         <td oc-if-roles="AdminUserAdmin">
-                            <button type="button" ng-click="sellerUsers.deleteUser(this)" class="btn btn-danger btn-xs">
+                            <button type="button" ng-click="sellerUsers.deleteUser(this)" ng-if="!user.xp.DoNotDelete" class="btn btn-danger btn-xs">
                                 <i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span>
                             </button>
                         </td>
