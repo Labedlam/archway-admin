@@ -10,6 +10,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, images
     vm.deleteProduct = deleteProduct;
     vm.createDefaultPrice = createDefaultPrice;
     vm.defaultImage = vm.model.xp && vm.model.xp.Images && vm.model.xp.Images.length ? `${imagestorageurl}${vm.model.xp.Images[0].StorageName}` : '';
+    if (!vm.model.xp.Images || !vm.model.xp.Images.length) vm.model.xp.Images = [{}];
     
     vm.navigationItems = ocNavItems.Filter(ocNavItems.Product());
     vm.state = $state.current.name;
@@ -19,7 +20,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, images
         folder: null,
         extensions: 'jpg, png, gif, jpeg, tiff',
         invalidExtensions: null,
-        onUpdate: patchImage,
+        onUpdate: null,
         multiple: false,
         addText: 'Upload an image',
         replaceText: 'Replace'
@@ -44,19 +45,6 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, images
             vm.model.xp.Keywords = [];
             vm.keywords  = []; 
         }
-    }
-
-    function patchImage(imageXP) {
-        return OrderCloudSDK.Products.Patch(vm.model.ID, {
-            xp: imageXP
-        })
-        .then(function() {
-            toastr.success('Images successfully updated', 'Success');
-            $state.go('.', {}, {reload: 'product', notify:false});
-        })
-        .catch(function(ex) {
-            $exceptionHandler(ex);
-        });
     }
 
     function getKeywords (){

@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .directive('ocFileUpload', ordercloudFileUpload)
 ;
 
-function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCloudSDK, ocConfirm, imagestorageurl) {
+function ordercloudFileUpload($uibModal, $ocFiles, OrderCloudSDK, toastr, ocConfirm, imagestorageurl) {
     var directive = {
         scope: {
             model: '<fileUploadModel',
@@ -49,10 +49,9 @@ function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCl
                         ? (scope.fileUploadModel[index] = data) 
                         : scope.fileUploadModel[scope.fileUploadOptions.keyname] ? scope.fileUploadModel[scope.fileUploadOptions.keyname].push(data) : scope.fileUploadModel[scope.fileUploadOptions.keyname] = [data];
                 } else {
-                    scope.fileUploadModel[scope.fileUploadOptions.keyname] = data;
+                    scope.fileUploadModel[scope.fileUploadOptions.keyname][0] = data.xp.Images[0];
                 }
-                callOnUpdate();
-                dirtyModel();
+                toastr.success('Product image updated');
             });
         };
 
@@ -64,7 +63,7 @@ function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCl
         scope.fileUploadModelCopy = angular.copy(scope.fileUploadModel);
         scope.dropped = function(index) {
             scope.fileUploadModel[scope.fileUploadOptions.keyname].splice(index, 1);
-            callOnUpdate();
+            // callOnUpdate();
             scope.fileUploadModelCopy = angular.copy(scope.fileUploadModel);
         };
 
@@ -77,27 +76,26 @@ function ordercloudFileUpload($uibModal, $ocFiles, $resource, devapiurl, OrderCl
                     if (scope.fileUploadOptions.multiple) {
                         if (scope.fileUploadModel && scope.fileUploadModel[scope.fileUploadOptions.keyname] && scope.fileUploadModel[scope.fileUploadOptions.keyname] && scope.fileUploadModel[scope.fileUploadOptions.keyname][index]) {
                             scope.fileUploadModel[scope.fileUploadOptions.keyname].splice(index, 1);
+                            scope.product.xp.Images = scope.fileUploadModel[scope.fileUploadOptions.keyname];
                         }
                     }
                     else {
-                        if (scope.fileUploadModel && scope.fileUploadModel[scope.fileUploadOptions.keyname]) scope.fileUploadModel[scope.fileUploadOptions.keyname] = null;
+                        if (scope.fileUploadModel && scope.fileUploadModel[scope.fileUploadOptions.keyname]) scope.fileUploadModel[scope.fileUploadOptions.keyname][0] = null;
+                        scope.product.xp.Images = [];
                     }
 
-                    callOnUpdate();
-                    dirtyModel();
+                    return OrderCloudSDK.Products.Patch( scope.product.ID, {xp: scope.product.xp}).then( () => {
+                        // callOnUpdate();
+                        dirtyModel();
+                        toastr.success('Product image deleted');
+                        scope.fileUploadModel[scope.fileUploadOptions.keyname] = scope.product.xp.Images && scope.product.xp.Images.length ? scope.product.xp.Images : [{}]; 
+                    });
                 });
         };
 
-        function callOnUpdate() {
-            let body = {
-                
-            };
-            //URL will look like this: `${devapiurl}/${scope.fileUploadModel[i].StorageName}/api/productimage/${productid}`
-            return $resource( `${devapiurl}/productimage/`, {}, { send: { method: 'POST', headers: { 'Authorization': `Bearer ${OrderCloudSDK.GetToken()}` } } } ).send( body ).$promise.then( () =>{
-                initModelValue();
-            });
-            // if (scope.fileUploadOptions.onUpdate && (typeof scope.fileUploadOptions.onUpdate == 'function')) scope.fileUploadOptions.onUpdate(scope.fileUploadModel);
-        }
+        // function callOnUpdate() {
+        //     if (scope.fileUploadOptions.onUpdate && (typeof scope.fileUploadOptions.onUpdate == 'function')) scope.fileUploadOptions.onUpdate(scope.fileUploadModel);
+        // }
 
         function dirtyModel() {
             if (formCtrl && formCtrl.setDirty) formCtrl.setDirty();

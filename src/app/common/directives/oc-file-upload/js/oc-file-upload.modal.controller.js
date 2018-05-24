@@ -2,14 +2,14 @@ angular.module('orderCloud')
     .controller('FileUploadModalCtrl', FileUploadModalController)
 ;
 
-function FileUploadModalController($http, devapiurl, OrderCloudSDK, $uibModalInstance, imagestorageurl, FileUploadOptions, CurrentValue, Product) {
+function FileUploadModalController($http, $timeout, devapiurl, OrderCloudSDK, $uibModalInstance, imagestorageurl, FileUploadOptions, CurrentValue, Product) {
     var vm = this;
     vm.additionalFields = angular.copy(FileUploadOptions.additionalFields);
     vm.invalidExtension = false;
     vm.options = FileUploadOptions;
     vm.product = Product;
     vm.model = angular.copy(CurrentValue);
-    vm.defaultImage = `${imagestorageurl}${vm.model.StorageName}`;
+    vm.defaultImage = !_.isEmpty(vm.model) ? `${imagestorageurl}${vm.model.StorageName}` : null;
 
     var allowed = parseExtensions(FileUploadOptions.extensions);
     var notAllowed = parseExtensions(FileUploadOptions.invalidExtensions);
@@ -53,7 +53,9 @@ function FileUploadModalController($http, devapiurl, OrderCloudSDK, $uibModalIns
         var fileName = event.target.files[0].name, 
             valid = true, 
             ext;
-        vm.file = event.target.files[0];
+        $timeout(function(){
+            vm.file = event.target.files[0];
+        }(), 100);
 
         if ((allowed.Extensions.length || allowed.Types.length) && fileName) {
             ext = fileName.split('.').pop().toLowerCase();
@@ -65,18 +67,20 @@ function FileUploadModalController($http, devapiurl, OrderCloudSDK, $uibModalIns
         }
         if (valid) {
             vm.invalidExtension = false;
+            return;
         } else {
             vm.invalidExtension = true;
             var input;
             event.target.files[0] = null;
             input = $('#orderCloudUpload').find('input').clone(true);
             $('#orderCloudUpload').find('input').replaceWith(input);
+            return;
         }
     }
 
     vm.submit = function() {
         vm.product.xp.Images = [];
-        return OrderCloudSDK.Products.Patch( vm.product.ID, { xp: vm.product.xp } ).then( prod => {
+        vm.loading = OrderCloudSDK.Products.Patch( vm.product.ID, { xp: vm.product.xp } ).then( prod => {
             let formBody = new FormData();
             formBody.append('imageUpload', vm.file, vm.file.name);
             return $http({
@@ -88,7 +92,7 @@ function FileUploadModalController($http, devapiurl, OrderCloudSDK, $uibModalIns
                     'Content-Type': undefined
                 }
             }).then(data => {
-                $uibModalInstance.close(vm.model);
+                return $uibModalInstance.close(data.data);
             });
         });
     };

@@ -4,34 +4,39 @@
         <h4 class="modal-title">{{fileUploadModal.options.uploadText}}</h4>
     </div>
     <div class="modal-body" cg-busy="fileUploadModal.loading">
-        <div class="form-group">
-            <figure class="thumbnail" ng-if="fileUploadModal.model">
-                <img class="img-responsive" ng-src="{{fileUploadModal.defaultImage}}" alt="Product Image">
-            </figure>
-            <div class="row form-group">
-                <label for="ProductName" class="col-sm-3 control-label">Upload Image</label>
-                <div class="col-sm-9 input-group">
-                    <button type="button" 
-                            id="OrderCloudFileUpload"
-                            class="btn btn-default"
-                            ng-click="fileUploadModal.upload()">
-                            Browse files
-                    </button>
-                    <input class="ng-hide" name="upload" type="file" id="orderCloudUpload" />
-                    <span class="text-small text-muted">{{fileUploadModal.file.name}}</span>
+        <div class="row">
+            <div class="col-xs-12">
+                <figure class="thumbnail" ng-if="fileUploadModal.defaultImage">
+                    <img class="img-responsive" ng-src="{{fileUploadModal.defaultImage}}" alt="Product Image">
+                </figure>
+                <div ng-if="!fileUploadModal.defaultImage" class="well text-center">
+                    <p>No Image for {{fileUploadModal.product.ID}}</p>
                 </div>
             </div>
-            <hr>
-            <div class="row form-group">
-                <label for="URLImage" class="col-sm-3 control-label">Image URL</label>
-                <div class="col-sm-7 input-group">
-                    <input type="url" class="form-control" ng-model="fileUploadModal.model[fileUploadModal.options.srcKeyname]" ng-change="fileUploadModal.validateUrl(fileUploadModal.model)" placeholder="Paste a url..." ng-model-options="{debounce: 1000}" ng-change="urlChange()" ng-disabled="fileUploadModal.model.Uploaded">
-                </div>
-            </div>
-            <span class="help-block error-msg" ng-show="fileUploadModal.invalidExtension">Invalid file type, please select another file.</span>
         </div>
+        <div class="row form-group">
+            <label for="ProductName" class="col-sm-3 control-label">Upload Image</label>
+            <div class="col-sm-7 input-group">
+                <button type="button" 
+                        id="OrderCloudFileUpload"
+                        class="btn btn-default"
+                        ng-click="fileUploadModal.upload()">
+                        Browse files
+                </button>
+                <input ng-hide="true" ng-model="fileUploadModal.file" name="upload" type="file" id="orderCloudUpload" />
+                <span class="text-small text-muted file_name">{{fileUploadModal.file.name}}</span>
+            </div>
+        </div>
+        <hr>
+        <div class="row form-group">
+            <label for="URLImage" class="col-sm-3 control-label">Image URL</label>
+            <div class="col-sm-7 input-group">
+                <input type="url" class="form-control" ng-model="fileUploadModal.model[fileUploadModal.options.srcKeyname]" ng-change="fileUploadModal.validateUrl(fileUploadModal.model)" placeholder="Paste a url..." ng-model-options="{debounce: 1000}" ng-change="urlChange()" ng-disabled="fileUploadModal.model.Uploaded">
+            </div>
+        </div>
+        <span class="help-block error-msg" ng-show="fileUploadModal.invalidExtension">Invalid file type, please select another file.</span>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-block btn-primary" ng-disabled="fileUploadModal.form.$invalid || !fileUploadModal.model">Save</button>
+        <button type="submit" class="btn btn-block btn-primary" ng-disabled="fileUploadModal.form.$invalid || !fileUploadModal.file">Save</button>
     </div>
 </form>
