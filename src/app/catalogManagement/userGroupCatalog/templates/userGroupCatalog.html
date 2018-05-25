@@ -42,13 +42,13 @@
                         'fa-folder-open': collapsed
                     }">
                 </i>
-                <p><a ui-sref="categories.category.products({catalogid:buyerCatalog.selectedCatalog.ID, categoryid:node.ID})" uib-tooltip="View Category" tooltip-placement="right" tooltip-popup-delay="1200">{{node.Name}}</a></p>
+                <p><a ui-sref="productAssignment({catalogid:userGroupCatalog.selectedCatalog.ID, categoryid:node.ID})" uib-tooltip="View Category" tooltip-placement="right" tooltip-popup-delay="1200">{{node.Name}}</a></p>
                 <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':node.Active}"></i>
                 <fieldset class="checkbox">
                     <label class="control-label">
                         <input type="checkbox" ng-disabled="userGroupCatalog.viewAllCategories || node.Inherited" name="{{'AssignCategory' + node.ID}}" ng-model="node.Assigned" ng-change="userGroupCatalog.updateAssignment(node)">
                     </label>
-                </fieldset>
+                </fieldset> 
             </div>
             <ol ui-tree-nodes ng-model="node.children" uib-collapse="!collapsed">
                 <li ng-repeat="node in node.children" ui-tree-node ng-include="'nodes_renderer.html'"></li>

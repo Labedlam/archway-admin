@@ -191,7 +191,7 @@ function OrderCloudNavItemsService(ocRoles) {
             {
                 icon: 'fa-users',
                 state: 'userGroups',
-                name: 'Asset-Collections',
+                name: 'Asset Collections',
                 activeWhen: ['userGroups', 'userGroup*'],
                 roles: {
                     Items: ['UserGroupRoles'],
