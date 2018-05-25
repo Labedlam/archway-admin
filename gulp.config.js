@@ -89,20 +89,28 @@ function getConstants() {
     var environment = process.env.environment || constants.environment;
     switch (environment) {
         case 'local':
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'http://core.four51.com:11629';
             result.apiurl = 'http://core.four51.com:9002';
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
             break;
         case 'qa':
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://qaauth.ordercloud.io';
             result.apiurl = 'https://qaapi.ordercloud.io';
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
             break;
         case 'staging':
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://stagingauth.ordercloud.io';
             result.apiurl = 'https://stagingapi.ordercloud.io';
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
             break;
         default:
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://auth.ordercloud.io';
             result.apiurl = 'https://api.ordercloud.io';
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
             break;
     }
     if (process.env.apiurl && process.env.authurl) {

@@ -1,8 +1,8 @@
 <div class="c-file-upload" ng-class="{'has-error': invalidExtension}">
-    <figure class="thumbnail" ng-show="fileUploadModel[fileUploadOptions.keyname][fileUploadOptions.srcKeyname]">
-        <img class="img-responsive" ng-src="{{fileUploadModel[fileUploadOptions.keyname][fileUploadOptions.srcKeyname]}}" alt="Product Image">
+    <figure class="thumbnail" ng-show="fileUploadModel[fileUploadOptions.keyname][0].StorageName">
+        <img class="img-responsive" ng-src="{{fileUploadOptions.src}}{{fileUploadModel[fileUploadOptions.keyname][0].StorageName}}" alt="Product Image">
         <div class="caption text-center">
-            <button type="button" class="btn btn-sm btn-danger" ng-click="removeFile($index)" ng-if="fileUploadModel[fileUploadOptions.keyname][fileUploadOptions.srcKeyname]" oc-prevent-click>
+            <button type="button" class="btn btn-sm btn-danger" ng-click="removeFile($index)" ng-if="fileUploadModel[fileUploadOptions.keyname][0]" oc-prevent-click>
                 <i class="fa fa-times"></i> Remove
             </button>
             <button type="button" class="btn btn-sm btn-info" ng-click="openModal()" oc-prevent-click>
