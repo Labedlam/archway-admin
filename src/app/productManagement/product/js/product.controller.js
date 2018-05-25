@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .controller('ProductCtrl', ProductController);
 
-function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderCloudSDK, ocProducts, ocNavItems, ocRelatedProducts, ocProductPricing, SelectedProduct) {
+function ProductController($exceptionHandler, $rootScope, $state, toastr, imagestorageurl, OrderCloudSDK, ocProducts, ocNavItems, ocRelatedProducts, ocProductPricing, SelectedProduct) {
     var vm = this;
     vm.model = angular.copy(SelectedProduct);
     vm.productName = angular.copy(SelectedProduct.Name);
@@ -9,16 +9,18 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     vm.updateProduct = updateProduct;
     vm.deleteProduct = deleteProduct;
     vm.createDefaultPrice = createDefaultPrice;
+    vm.defaultImage = vm.model.xp && vm.model.xp.Images && vm.model.xp.Images.length ? `${imagestorageurl}${vm.model.xp.Images[0].StorageName}` : '';
+    if (!vm.model.xp.Images || !vm.model.xp.Images.length) vm.model.xp.Images = [{}];
     
     vm.navigationItems = ocNavItems.Filter(ocNavItems.Product());
     vm.state = $state.current.name;
     vm.fileUploadOptions = {
-        keyname: 'image',
-        srcKeyname: 'URL',
+        keyname: 'Images',
+        src: imagestorageurl,
         folder: null,
         extensions: 'jpg, png, gif, jpeg, tiff',
         invalidExtensions: null,
-        onUpdate: patchImage,
+        onUpdate: null,
         multiple: false,
         addText: 'Upload an image',
         replaceText: 'Replace'
@@ -36,33 +38,20 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, OrderC
     function _setKeywords(){
         if(vm.model.xp && vm.model.xp.Keywords){
            vm.keywords = _.map(vm.model.xp.Keywords, function(keyword){
-            return { text : keyword} 
+            return { text : keyword}; 
            });
         }else{
-            if(!vm.model.xp)vm.model.xp = { }
+            if(!vm.model.xp)vm.model.xp = { };
             vm.model.xp.Keywords = [];
             vm.keywords  = []; 
         }
-    }
-
-    function patchImage(imageXP) {
-        return OrderCloudSDK.Products.Patch(vm.model.ID, {
-            xp: imageXP
-        })
-        .then(function() {
-            toastr.success('Images successfully updated', 'Success');
-            $state.go('.', {}, {reload: 'product', notify:false});
-        })
-        .catch(function(ex) {
-            $exceptionHandler(ex);
-        });
     }
 
     function getKeywords (){
         //returns an array of keywords
         return _.map(vm.keywords, function(keyword){
             return keyword.text;    
-        })
+        });
     }
 
     function updateProduct() {

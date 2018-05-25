@@ -1,13 +1,21 @@
 <form name="sellerUserEditModal.form" class="form-horizontal" ng-submit="sellerUserEditModal.submit()" novalidate ng-disabled="sellerUserEditModal.loading" oc-readonly-roles="AdminUserAdmin" oc-pretty-submit>
     <div class="modal-header">
         <button type="button" class="close" aria-label="Close" ng-click="sellerUserEditModal.cancel()"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span class="text-muted">Editing: </span>{{sellerUserEditModal.fullName || sellerUserEditModal.username}}</h4>
+        <h4 class="modal-title" ng-if="!sellerUserEditModal.user.xp.DoNotDelete || sellerUserEditModal.acknowledgement">
+            <span class="text-muted">Editing: </span>{{sellerUserEditModal.fullName || sellerUserEditModal.username}}
+        </h4>
+        <h4 class="modal-title" ng-if="sellerUserEditModal.user.xp.DoNotDelete && !sellerUserEditModal.acknowledgement">
+            <span class="text-danger">Caution!</span>
+        </h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" ng-if="sellerUserEditModal.user.xp.DoNotDelete && !sellerUserEditModal.acknowledgement">
+        <p class="text-center">This user is vital to integrations/back-office use. Do you wish to continue?</p>
+    </div>
+    <div class="modal-body" ng-if="!sellerUserEditModal.user.xp.DoNotDelete || sellerUserEditModal.acknowledgement">
         <div class="form-group">
             <label for="ID" class="control-label col-sm-3">ID</label>
             <div class="col-sm-9">
-                <input id="ID" name="ID" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" class="form-control" ng-model="sellerUserEditModal.user.ID"/>
+                <input id="ID" name="ID" type="text"  pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" class="form-control" ng-model="sellerUserEditModal.user.ID"/>
             </div>
         </div>
         <div class="form-group">
@@ -52,6 +60,12 @@
         </div>
     </div>
     <div class="modal-footer" >
-        <button type="submit" class="btn btn-block btn-primary" cg-busy="sellerUserEditModal.loading">Update</button>
+        <button type="submit" ng-if="sellerUserEditModal.acknowledgement || !sellerUserEditModal.user.xp.DoNotDelete" class="btn btn-block btn-primary" cg-busy="sellerUserEditModal.loading">Update</button>
+        <div class="col-xs-6" ng-if="!sellerUserEditModal.acknowledgement && sellerUserEditModal.user.xp.DoNotDelete">
+            <button type="button" class="btn btn-block btn-default" ng-click="sellerUserEditModal.cancel()">Cancel</button>
+        </div>
+        <div class="col-xs-6" ng-if="!sellerUserEditModal.acknowledgement && sellerUserEditModal.user.xp.DoNotDelete">
+            <button type="button" class="btn btn-block btn-primary" ng-click="sellerUserEditModal.acknowledgement = !sellerUserEditModal.acknowledgement">Continue</button>
+        </div>
     </div>
 </form>

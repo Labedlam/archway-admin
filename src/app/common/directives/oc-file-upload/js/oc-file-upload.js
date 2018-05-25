@@ -2,11 +2,12 @@ angular.module('orderCloud')
     .directive('ocFileUpload', ordercloudFileUpload)
 ;
 
-function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
+function ordercloudFileUpload($uibModal, $ocFiles, OrderCloudSDK, toastr, ocConfirm, imagestorageurl) {
     var directive = {
         scope: {
             model: '<fileUploadModel',
-            options: '<fileUploadOptions'
+            options: '<fileUploadOptions',
+            product: '='
         },
         restrict: 'E',
         require: '^?ocPrettySubmit',
@@ -16,37 +17,30 @@ function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
     };
 
     function link(scope, element, attrs, formCtrl) {
-        if (!ocFiles.Enabled()) return;
+        scope.imagestorageurl = imagestorageurl;
+        // if (!ocFiles.Enabled()) return;
         (function mergeOptions() {
             var globalOptions = $ocFiles.GetFileUploadOptions();
             scope.fileUploadOptions = scope.options ?  _.merge({}, globalOptions, scope.options) : globalOptions;
             scope.fileUploadTemplate = scope.fileUploadOptions.multiple ? 'common/directives/oc-file-upload/templates/oc-files-upload.html' : 'common/directives/oc-file-upload/templates/oc-file-upload.html';
-            initModelValue();
+            scope.model ? scope.fileUploadModel = angular.copy(scope.model) : scope.fileUploadModel = [];
         })();
-
-        function initModelValue() {
-            if (scope.fileUploadModel) scope.model = scope.fileUploadModel;
-            scope.model ? scope.fileUploadModel = angular.copy(scope.model) : scope.fileUploadModel = {};
-            var modelKeynameConstructor = scope.fileUploadModel[scope.fileUploadOptions.keyname] ? scope.fileUploadModel[scope.fileUploadOptions.keyname].constructor : undefined;
-
-            if (scope.fileUploadOptions.multiple && modelKeynameConstructor !== Array) {
-                scope.fileUploadModel[scope.fileUploadOptions.keyname] = [];
-            } else if (!scope.fileUploadOptions.multiple && modelKeynameConstructor !== Object) {
-                scope.fileUploadModel[scope.fileUploadOptions.keyname] = {};
-            }
-        }
 
         scope.openModal = function(index) {
             $uibModal.open({
                 templateUrl: 'common/directives/oc-file-upload/templates/oc-file-upload.modal.html',
                 controller: 'FileUploadModalCtrl',
                 controllerAs: 'fileUploadModal',
+                size: 'lg',
                 resolve: {
                     CurrentValue: function() {
-                        return scope.fileUploadOptions.multiple ? (index > -1 ? scope.fileUploadModel[scope.fileUploadOptions.keyname][index] : {}) : scope.fileUploadModel[scope.fileUploadOptions.keyname];
+                        return scope.fileUploadOptions.multiple ? (index > -1 ? scope.fileUploadModel[scope.fileUploadOptions.keyname][index] : {}) : scope.fileUploadModel[scope.fileUploadOptions.keyname][0];
                     },
                     FileUploadOptions: function() {
                         return scope.fileUploadOptions;
+                    },
+                    Product: function() {
+                        return scope.product;
                     }
                 }
             }).result.then(function(data) {
@@ -55,10 +49,9 @@ function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
                         ? (scope.fileUploadModel[index] = data) 
                         : scope.fileUploadModel[scope.fileUploadOptions.keyname] ? scope.fileUploadModel[scope.fileUploadOptions.keyname].push(data) : scope.fileUploadModel[scope.fileUploadOptions.keyname] = [data];
                 } else {
-                    scope.fileUploadModel[scope.fileUploadOptions.keyname] = data;
+                    scope.fileUploadModel[scope.fileUploadOptions.keyname][0] = data.xp.Images[0];
                 }
-                callOnUpdate();
-                dirtyModel();
+                toastr.success('Product image updated');
             });
         };
 
@@ -70,7 +63,7 @@ function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
         scope.fileUploadModelCopy = angular.copy(scope.fileUploadModel);
         scope.dropped = function(index) {
             scope.fileUploadModel[scope.fileUploadOptions.keyname].splice(index, 1);
-            callOnUpdate();
+            // callOnUpdate();
             scope.fileUploadModelCopy = angular.copy(scope.fileUploadModel);
         };
 
@@ -83,22 +76,26 @@ function ordercloudFileUpload($uibModal, $ocFiles, ocFiles, ocConfirm) {
                     if (scope.fileUploadOptions.multiple) {
                         if (scope.fileUploadModel && scope.fileUploadModel[scope.fileUploadOptions.keyname] && scope.fileUploadModel[scope.fileUploadOptions.keyname] && scope.fileUploadModel[scope.fileUploadOptions.keyname][index]) {
                             scope.fileUploadModel[scope.fileUploadOptions.keyname].splice(index, 1);
+                            scope.product.xp.Images = scope.fileUploadModel[scope.fileUploadOptions.keyname];
                         }
                     }
                     else {
-                        if (scope.fileUploadModel && scope.fileUploadModel[scope.fileUploadOptions.keyname]) scope.fileUploadModel[scope.fileUploadOptions.keyname] = null;
+                        if (scope.fileUploadModel && scope.fileUploadModel[scope.fileUploadOptions.keyname]) scope.fileUploadModel[scope.fileUploadOptions.keyname][0] = null;
+                        scope.product.xp.Images = [];
                     }
 
-                    callOnUpdate();
-                    dirtyModel();
+                    return OrderCloudSDK.Products.Patch( scope.product.ID, {xp: scope.product.xp}).then( () => {
+                        // callOnUpdate();
+                        dirtyModel();
+                        toastr.success('Product image deleted');
+                        scope.fileUploadModel[scope.fileUploadOptions.keyname] = scope.product.xp.Images && scope.product.xp.Images.length ? scope.product.xp.Images : [{}]; 
+                    });
                 });
         };
 
-        function callOnUpdate() {
-            if (scope.fileUploadOptions.onUpdate && (typeof scope.fileUploadOptions.onUpdate == 'function')) scope.fileUploadOptions.onUpdate(scope.fileUploadModel);
-            initModelValue();
-
-        }
+        // function callOnUpdate() {
+        //     if (scope.fileUploadOptions.onUpdate && (typeof scope.fileUploadOptions.onUpdate == 'function')) scope.fileUploadOptions.onUpdate(scope.fileUploadModel);
+        // }
 
         function dirtyModel() {
             if (formCtrl && formCtrl.setDirty) formCtrl.setDirty();
