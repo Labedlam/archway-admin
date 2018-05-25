@@ -41,6 +41,25 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="SAP" class="control-label col-sm-3">SAP</label>
+            <div class="col-sm-9">
+                <input id="Email" name="SAP" type="string" class="form-control" ng-model="userEditModal.user.xp.SAP" required/>
+            </div>
+        </div>
+        <div class="form-group" ng-if="(userEditModal.user.xp.UserType === 'ClientAdmin' ||  userEditModal.user.xp.UserType === 'ArchwayAdmin')">
+            <label for="UserType" class="control-label col-sm-3">User Type</label>
+            <div class="col-sm-9">
+                <select name="UserType" class="form-control" ng-options="type.Value as type.Name for type in userEditModal.userTypeOptions" ng-model="userEditModal.user.xp.UserType" required></select>
+
+            </div> 
+        </div>
+        <div class="form-group"  ng-if="!(userEditModal.user.xp.UserType === 'ClientAdmin' ||  userEditModal.user.xp.UserType === 'ArchwayAdmin')">
+            <div >
+                <label for="UserType" class="control-label col-sm-3">User Type</label>
+                <div class="col-sm-9 admin-user-type">{{userEditModal.user.xp.UserType}}</div>
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <div class="checkbox">
                     <label for="Active">
