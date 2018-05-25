@@ -17,7 +17,7 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
     vm.searchResults = Parameters.search && Parameters.search.length > 0;
 
     vm.filter = function(resetPage) {
-        $state.go('.', ocParameters.Create(vm.parameters, resetPage));
+        $state.go('productAssignment', ocParameters.Create(vm.parameters, resetPage));
     };
 
     vm.search = function() {
@@ -108,7 +108,8 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
                 setPSQueue.push(setPriceSchedule(assignment));
             }
         })
-        
+       
+ 
         //update assignment
         vm.searchLoading = $q.all(setPSQueue).then(()=>{
             ocCatalog.Products.UpdateAssignments(CurrentAssignments, vm.changedAssignments, $stateParams.catalogid, $stateParams.buyerid, vm.userGroup.ID )

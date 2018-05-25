@@ -57,7 +57,7 @@ function UserGroupCatalogConfig($stateProvider) {
         })
         .state('productAssignment', {
             parent: 'userGroup',
-            url: '/:catalogid/:categoryid',
+            url: '/:catalogid/:categoryid?search&page&pageSize&searchOn&sortBy&filters',
             templateUrl: 'catalogManagement/userGroupCatalog/templates/userGroupProductAssignment.html',
             controller: 'UserGroupProductAssignmentCtrl',
             controllerAs: 'ugProductAssignment',
