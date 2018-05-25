@@ -17,7 +17,7 @@ function BuyerProductsConfig($stateProvider) {
                     return ocParameters.Get($stateParams);
                 },
                 CurrentAssignments: function ($stateParams, ocProductPricing) {
-                    return ocProductPricing.Assignments.Get(null, null, $stateParams.buyerid, $stateParams.buyerid);
+                    return ocProductPricing.Assignments.Get(null, null, $stateParams.buyerid,  $stateParams.buyerid);
                 },
                 ProductList: function (OrderCloudSDK, Parameters) {
                     Parameters.filters = angular.extend(Parameters.filters, {

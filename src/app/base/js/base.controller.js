@@ -29,7 +29,7 @@ function BaseController(CurrentUser, $state) {
 
     vm.selectNavItem = function (stateName) {
         if(stateName === 'buyers'){
-            $state.go('buyer', {buyerid: 'ppg'});
+            $state.go('userGroups', {buyerid: 'ppg'});
         }
         else{
             $state.go(stateName);

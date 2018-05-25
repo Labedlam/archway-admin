@@ -73,7 +73,7 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
             });
     }
 
-    function _getProductAssignments(categoryid, catalogid) {
+    function _getProductAssignments(categoryid, catalogid, usergroupid) {
         var deferred = $q.defer();
         var assignments = [];
 
@@ -82,7 +82,27 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
             page: 1,
             pageSize: 100
         };
-        OrderCloudSDK.Categories.ListProductAssignments(catalogid, options)
+        if(usergroupid){
+            options.userGroupID = usergroupid;
+            OrderCloudSDK.Products.ListAssignments(options)
+            .then(function(data) {
+                assignments = data.Items;
+                var page = data.Meta.Page;
+                var queue = [];
+                while (page <= data.Meta.TotalPages) {
+                    page++;
+                    options.page = page;
+                    queue.push( OrderCloudSDK.Products.ListAssignments(options));
+                }
+                $q.all(queue).then(function(results) {
+                    angular.forEach(results, function(result) {
+                        assignments = assignments.concat(result.Items);
+                    });
+                    deferred.resolve(assignments);
+                });
+            });
+        }else{
+            OrderCloudSDK.Categories.ListProductAssignments(catalogid, options)
             .then(function(data) {
                 assignments = data.Items;
                 var page = data.Meta.Page;
@@ -99,6 +119,8 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                     deferred.resolve(assignments);
                 });
             });
+        }
+      
 
         return deferred.promise;
     }
@@ -114,7 +136,7 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         return productList;
     }
 
-    function _compareProductAssignments(allAssignments, productList, categoryID) {
+    function _compareProductAssignments(allAssignments, productList, categoryID, usergroupid) {
         var changedAssignments = [];
         angular.forEach(productList.Items, function(product) {
             var existingAssignment = _.filter(allAssignments, {ProductID: product.ID})[0];
@@ -137,7 +159,7 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         return changedAssignments;
     }
 
-    function _updateProductAssignments(allAssignments, changedAssignments, catalogid) {
+    function _updateProductAssignments(allAssignments, changedAssignments, catalogid, buyerID, userGroupID) {
         var deferred = $q.defer();
         var assignmentQueue = [];
         var errors = [];
@@ -146,7 +168,23 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
             if (!diff.old && diff.new) {
                 assignmentQueue.push((function() {
                     var d = $q.defer();
-
+                   if(userGroupID){
+                    OrderCloudSDK.Products.SaveAssignment(diff.new)
+                    .then(function() {
+                        var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID }
+                        OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
+                        .then(()=>{
+                             //create new category assignment
+                            allAssignments.push(diff.new); //add the new assignment to the assignment list
+                            d.resolve();
+                        })
+                     
+                    })
+                    .catch(function(ex) {
+                        errors.push(ex);
+                        d.resolve();
+                    });
+                   }else{
                     OrderCloudSDK.Categories.SaveProductAssignment(catalogid, diff.new) //create new category assignment
                         .then(function() {
                             allAssignments.push(diff.new); //add the new assignment to the assignment list
@@ -157,14 +195,31 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                             d.resolve();
                         });
 
-                    return d.promise;
+                    
+                   }
+                   return d.promise;
+                  
                 })());
             }
             else if (diff.old && !diff.new) {
                 assignmentQueue.push((function() {
                     var d = $q.defer();
-
-                    OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
+                    if(userGroupID){
+                        OrderCloudSDK.Products.DeleteAssignment(diff.old.ProductID, buyerID, {userGroupID: diff.old.UserGroupID})
+                        .then(function() {
+                            OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
+                            .then(function() {
+                                allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
+                                d.resolve();
+                            })
+                        })
+                        .catch(function(ex) {
+                            errors.push(ex);
+                            d.resolve();
+                        });
+                    }
+                    else{
+                        OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
                         .then(function() {
                             allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
                             d.resolve();
@@ -174,6 +229,8 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                             d.resolve();
                         });
 
+                   
+                    }
                     return d.promise;
                 })());
             }
@@ -185,6 +242,8 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
 
         return deferred.promise;
     }
+
+
 
     function _getAvailabilityAssignments(categoryid, buyerid, catalogid) {
         var deferred = $q.defer();
