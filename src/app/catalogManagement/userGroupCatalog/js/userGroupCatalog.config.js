@@ -54,5 +54,35 @@ function UserGroupCatalogConfig($stateProvider) {
                     return ocCatalogTree.Get(buyerMappedData);
                 }
             }
+        })
+        .state('productAssignment', {
+            parent: 'userGroup',
+            url: '/:catalogid/:categoryid?search&page&pageSize&searchOn&sortBy&filters',
+            templateUrl: 'catalogManagement/userGroupCatalog/templates/userGroupProductAssignment.html',
+            controller: 'UserGroupProductAssignmentCtrl',
+            controllerAs: 'ugProductAssignment',
+            // data: {
+            //     pageTitle: 'ProductAssignment'
+            // },
+            resolve:{
+                Parameters: function($stateParams, ocParameters) {
+                    return ocParameters.Get($stateParams);
+                },
+                Category: function($stateParams, OrderCloudSDK){
+                    return OrderCloudSDK.Categories.Get($stateParams.catalogid, $stateParams.categoryid);
+                },
+                UserGroup: function($stateParams, OrderCloudSDK){
+                    return OrderCloudSDK.UserGroups.Get($stateParams.buyerid, $stateParams.usergroupid)
+                },               
+                CurrentAssignments: function($stateParams, ocCatalog) {
+                    return ocCatalog.Products.GetAssignments($stateParams.categoryid, $stateParams.catalogid, $stateParams.usergroupid);
+                },
+                ProductList: function(OrderCloudSDK, ocCatalog, Parameters, CurrentAssignments) {
+                    return OrderCloudSDK.Products.List(Parameters)
+                        .then(function(data) {
+                            return ocCatalog.Products.MapAssignments(CurrentAssignments, data);
+                        });
+                }
+            }
         });
 }

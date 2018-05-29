@@ -77,12 +77,18 @@ function SellerUsersController($state, toastr, OrderCloudSDK, ocSellerUsers, ocP
     };
 
     vm.deleteUser = function(scope) {
-        ocSellerUsers.Delete(scope.user)
-            .then(function() {
-                vm.list.Items.splice(scope.$index, 1);
-                vm.list.Meta.TotalCount--;
-                vm.list.Meta.ItemRange[1]--;
-                toastr.success(scope.user.Username + ' was deleted.');
-            });
+        //Should always hit else statement - if statement is just for fall-back.
+        if (scope.user.xp.DoNotDelete) {
+            toastr.error('This user is required for integrations/back-office use and cannot be deleted');
+            return;
+        } else {
+            ocSellerUsers.Delete(scope.user)
+                .then(function() {
+                    vm.list.Items.splice(scope.$index, 1);
+                    vm.list.Meta.TotalCount--;
+                    vm.list.Meta.ItemRange[1]--;
+                    toastr.success(scope.user.Username + ' was deleted.');
+                });
+        }
     };
 }
