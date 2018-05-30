@@ -65,12 +65,27 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="form-group">
+                    <!-- <fieldset class="form-group">
                         <label for="orderCloudUpload" class="col-sm-3 control-label">Logo</label>
                         <div class="col-sm-9">
                             <oc-file-upload file-upload-model="buyer.settings.xp" file-upload-options="buyer.fileUploadOptions"></oc-file-upload>
                         </div>
+                    </fieldset> -->
+
+                    <fieldset class="form-group">
+                        <label for="English" class="col-sm-3 control-label">Home Message (English)</label>
+                        <div class="col-sm-9">
+                            <textarea id="English" name="English" class="form-control" ng-model="buyer.settings.xp.HomeMessage.English"/>
+                        </div>
                     </fieldset>
+
+                    <fieldset class="form-group">
+                            <label for="French" class="col-sm-3 control-label">Home Message (French)</label>
+                            <div class="col-sm-9">
+                                <textarea id="French" name="French" class="form-control" ng-model="buyer.settings.xp.HomeMessage.French"/>
+                            </div>
+                        </fieldset>
+
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
                             <div class="checkbox">

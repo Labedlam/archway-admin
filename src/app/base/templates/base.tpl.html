@@ -21,9 +21,13 @@
                 <li ng-class="{active: application.$state.is('catalogs') || application.$state.includes('catalog')}" oc-if-roles="CatalogRoles">
                     <a ng-click="base.selectNavItem('catalogs')"><i class="fa fa-sitemap"></i> Catalogs</a>
                 </li>
-                <li ng-class="{active: application.$state.is('buyers') || application.$state.includes('buyer')}" oc-if-roles="{Items:['BuyerRoles', 'CatalogRoles'], Any:false}">
+                <li ng-class="{active: application.$state.is('buyers') && application.$state.includes('user-groups') }" oc-if-roles="{Items:['BuyerRoles', 'CatalogRoles'], Any:false}">
                     <!--TODO: Add oc-if-roles="CatalogRoles"-->
-                    <a ng-click="base.selectNavItem('buyers')"><i class="fa fa-tags"></i>Asset Collections</a>
+                    <a ng-click="base.selectNavItem('assetCollections')"><i class="fa fa-tags"></i> Asset Collections</a>
+                </li>
+                <li ng-class="{active: application.$state.is('buyers')}" oc-if-roles="{Items:['BuyerRoles', 'CatalogRoles'], Any:false}">
+                    <!--TODO: Add oc-if-roles="CatalogRoles"-->
+                    <a ng-click="base.selectNavItem('buyers')"><i class="fa fa-tags"></i> PPG Settings</a>
                 </li>
                 <li ng-class="{active: application.$state.is('orders') || application.$state.includes('orderDetail')}" oc-if-roles="{Items:['BuyerRoles', 'OrderRoles'], Any:false}">
                     <a ng-click="base.selectNavItem('orders')"><i class="fa fa-inbox"></i> Orders</a>
