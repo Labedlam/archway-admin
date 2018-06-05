@@ -6,12 +6,6 @@ function BuyerController($state, $exceptionHandler, toastr, OrderCloudSDK, ocBuy
     var vm = this;
     vm.selectedBuyer = SelectedBuyer;
     vm.settings = angular.copy(SelectedBuyer);
-    if (!vm.settings.xp) vm.settings.xp = {
-        HomeMessage: {
-            Enlish: '',
-            French: ''
-        }
-    };
 
     vm.updateValidity = updateValidity;
     vm.updateBuyer = updateBuyer;
