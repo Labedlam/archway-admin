@@ -1,12 +1,12 @@
 <article ui-view>
     <header class="l-page-header">
         <h3 class="l-page-header__title">
-            Seller Users
+            Archway Admin Users
         </h3>
         <!--====== CREATE ======-->
         <div class="l-page-header__btns" oc-if-roles="AdminUserAdmin">
             <button type="button" class="btn btn-primary btn-block" ng-click="sellerUsers.createUser()"><i class="fa fa-plus-circle"></i>
-                New Seller User
+                New Archway Admin User
             </button>
         </div>
     </header>
@@ -19,7 +19,7 @@
                     <span class="input-group-addon">
                         <i class="fa fa-search"></i>
                     </span>
-                    <input type="search" ng-change="sellerUsers.search()" ng-model-options="{debounce:1000}" placeholder="Search seller users..." ng-model="sellerUsers.parameters.search" class="form-control">
+                    <input type="search" ng-change="sellerUsers.search()" ng-model-options="{debounce:1000}" placeholder="Search archway admin users..." ng-model="sellerUsers.parameters.search" class="form-control">
                     <span ng-if="sellerUsers.searchResults" class="input-group-btn">
                         <button class="btn btn-default" type="button" aria-label="Clear Search" ng-click="sellerUsers.clearSearch()"><i class="fa fa-times"></i> <span class="hidden-xs">Clear Search</span></button>
                     </span>
@@ -32,7 +32,7 @@
     <div cg-busy="sellerUsers.searchLoading">
         <div class="no-matches" ng-if="!sellerUsers.list.Items.length">
             <b ng-if="sellerUsers.searchResults">No matches found.</b>
-            <b ng-if="!sellerUsers.searchResults">This seller organization does not have any seller users.</b>
+            <b ng-if="!sellerUsers.searchResults">This seller organization does not have any archway admins users.</b>
         </div>
         <div ng-if="sellerUsers.list.Items.length">
             <div class="row">
