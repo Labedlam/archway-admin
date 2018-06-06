@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .controller('UsersCtrl', UsersController)
 ;
 
-function UsersController($state, $stateParams, $window, toastr, $ocMedia, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters) {
+function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters) {
     var vm = this;
     vm.list = UserList;
     vm.parameters = Parameters;
@@ -93,7 +93,7 @@ function UsersController($state, $stateParams, $window, toastr, $ocMedia, OrderC
         };
         return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)
             .then(function(data) {
-                let buyerAppUrl = `https://archway-ppg-test.herokuapp.com/punchout?token=${data.access_token}`;
+                let buyerAppUrl = `${hostedsiteurl}/punchout?token=${data.access_token}`;
                 window.open(buyerAppUrl, '_blank');
             });
     };

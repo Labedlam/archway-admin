@@ -1,7 +1,7 @@
 {
   "appname": "Angular Seller",
   "clientid": "2493C95E-537A-4066-929E-9D15E7DF613B",
-  "environment": "prod",
+  "environment": "qa",
   "defaultstate": "home",
   "html5mode": true,
   "bootswatchtheme": null,
