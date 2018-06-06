@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .factory('ocUsers', OrderCloudUsers)
 ;
 
-function OrderCloudUsers($q, $uibModal, ocConfirm, OrderCloudSDK) {
+function OrderCloudUsers($q, $uibModal, ocConfirm, OrderCloudSDK ) {
     var service = {
         Create: _create,
         Edit: _edit,
@@ -16,16 +16,24 @@ function OrderCloudUsers($q, $uibModal, ocConfirm, OrderCloudSDK) {
     };
 
     function _create(buyerid) {
-        return $uibModal.open({
-            templateUrl: 'buyerManagement/users/templates/userCreate.modal.html',
-            controller: 'UserCreateModalCtrl',
-            controllerAs: 'userCreateModal',
-            resolve: {
-                SelectedBuyerID: function() {
-                    return buyerid;
-                }
-            }
-        }).result;
+        var queue = {};
+         queue.AssetCollections = OrderCloudSDK.UserGroups.List(buyerid, {filters: {'xp.GroupType': 'AssetCollection'}});
+         return $q.all(queue) 
+            .then(function(info){
+                return $uibModal.open({
+                    templateUrl: 'buyerManagement/users/templates/userCreate.modal.html',
+                    controller: 'UserCreateModalCtrl',
+                    controllerAs: 'userCreateModal',
+                    resolve: {
+                        SelectedBuyerID: function() {
+                            return buyerid;
+                        },
+                        AssetCollections: function(){
+                            return info.AssetCollections.Items;
+                        }
+                    }
+                }).result;
+            });
     }
 
     function _edit(user, buyerid) {

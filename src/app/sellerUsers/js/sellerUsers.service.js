@@ -16,11 +16,22 @@ function OrderCloudSellerUsers($q, $uibModal, ocConfirm, OrderCloudSDK) {
     };
 
     function _create() {
-        return $uibModal.open({
-            templateUrl: 'sellerUsers/templates/sellerUserCreate.modal.html',
-            controller: 'SellerUserCreateModalCtrl',
-            controllerAs: 'sellerUserCreateModal'
-        }).result;
+        var queue = {};
+        queue.AdminUG = OrderCloudSDK.AdminUserGroups.List({search: 'archway-admin-group'});
+        return $q.all(queue)
+            .then(function(info){
+                return $uibModal.open({
+                    templateUrl: 'sellerUsers/templates/sellerUserCreate.modal.html',
+                    controller: 'SellerUserCreateModalCtrl',
+                    controllerAs: 'sellerUserCreateModal',
+                    resolve: {
+                        AdminUserGroups: function() {
+                            return info.AdminUG.Items;
+                        }
+                    }
+                }).result;
+        });
+      
     }
 
     function _edit(user) {
