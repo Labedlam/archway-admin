@@ -41,16 +41,6 @@ function CreateProductPriceModalController($exceptionHandler, $uibModalInstance,
         if (SelectPriceData.DefaultPriceSchedule) vm.priceSchedule.Name = vm.product.Name + ' Default Price';
         vm.loading = ocProductPricing.CreatePrice(vm.product, vm.priceSchedule, vm.selectedBuyer, userGroups, SelectPriceData.DefaultPriceSchedule)
             .then(function (data) {
-                if (!SelectPriceData.DefaultPriceSchedule) {
-                    _.each(userGroups, group => { 
-                        group.BuyerID = vm.selectedBuyer.ID;
-                    });
-                    SelectPriceData.CurrentAssignments[data.NewPriceSchedule.ID] = {
-                        Buyers: [],
-                        PriceSchedule: data.NewPriceSchedule,
-                        UserGroups: userGroups
-                    };
-                }
                 $uibModalInstance.close({
                     SelectedPrice: data.NewPriceSchedule,
                     UpdatedAssignments: SelectPriceData.CurrentAssignments

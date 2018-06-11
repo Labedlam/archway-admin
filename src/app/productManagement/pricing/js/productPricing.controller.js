@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .controller('ProductPricingCtrl', ProductPricingController)
 ;
 
-function ProductPricingController($q, $rootScope, $stateParams, $uibModal, toastr, AssignmentList, AssignmentData, ocProductPricing, ocConfirm, SelectedProduct) {
+function ProductPricingController($state, $rootScope, $stateParams, $uibModal, toastr, AssignmentList, AssignmentData, ocProductPricing, ocConfirm, SelectedProduct) {
     var vm = this;
     vm.list = AssignmentList;
     vm.listAssignments = AssignmentData;
@@ -61,6 +61,9 @@ function ProductPricingController($q, $rootScope, $stateParams, $uibModal, toast
     };
 
     vm.createPrice = function() {
-        return ocProductPricing.CreateProductPrice(vm.product, vm.selectedPrice.Availability[0], vm.listAssignments);
+        return ocProductPricing.CreateProductPrice(vm.product, vm.selectedPrice.Availability[0], vm.listAssignments)
+            .then( () => {
+                $state.go('product.pricing', {productid: vm.product.ID}, {reload: true});
+            });
     };
 }
