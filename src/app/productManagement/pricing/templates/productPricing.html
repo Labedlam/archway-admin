@@ -43,7 +43,8 @@
             <!--==== Basic Price Schedule Information ====-->
             <div class="pull-right">
                 <button type="button" class="btn btn-default" ng-click="productPricing.editPrice()"><i class="fa fa-edit"></i> Edit</button>
-                <button type="button" class="btn btn-danger" ng-click="productPricing.deletePrice()"><i class="fa fa-trash"></i> Delete</button>
+                <!-- <button type="button" class="btn btn-danger" ng-click="productPricing.deletePrice()"><i class="fa fa-trash"></i> Delete</button> -->
+                <button type="button" class="btn btn-primary" ng-click="productPricing.createPrice()"><i class="fa fa-plus"></i> Create New Price</button>
             </div>
             <h3>
                 {{productPricing.selectedPrice.PriceSchedule.Name}} <br>
@@ -68,19 +69,11 @@
                     <br>
                 </div>
                 <div class="col-xs-7">
-                    <b class="text-success" ng-if="productPricing.selectedPrice.PriceSchedule.ApplyShipping">
-                        <i class="fa fa-check"></i> Apply Shipping <br>
+                    <b ng-class="!productPricing.selectedPrice.PriceSchedule.ApplyShipping ? 'text-warning' : 'text-success'">
+                        <i class="fa" ng-class="!productPricing.selectedPrice.PriceSchedule.ApplyShipping ? 'fa-times' : 'fa-check'"></i> Apply Shipping <br>
                     </b>
-                    <b class="text-warning" ng-if="!productPricing.selectedPrice.PriceSchedule.ApplyShipping">
-                        <i class="fa fa-times"></i> Apply Shipping <br>
-                    </b>
-                    <b class="text-success" ng-if="productPricing.selectedPrice.PriceSchedule.ApplyTax">
-                        <i class="fa fa-check"></i> Apply Tax
-                        <br>
-                    </b>
-                    <b class="text-warning" ng-if="!productPricing.selectedPrice.PriceSchedule.ApplyTax">
-                        <i class="fa fa-times"></i> Apply Tax
-                        <br>
+                    <b ng-class="!productPricing.selectedPrice.PriceSchedule.ApplyTax ? 'text-warning' : 'text-success'">
+                        <i class="fa" ng-class="!productPricing.selectedPrice.PriceSchedule.ApplyTax ? 'fa-times' : 'fa-check'"></i> Apply Tax
                     </b>
                 </div>
             </div>

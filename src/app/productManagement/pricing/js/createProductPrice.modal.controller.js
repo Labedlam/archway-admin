@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .controller('CreateProductPriceModalCtrl', CreateProductPriceModalController);
 
-function CreateProductPriceModalController($exceptionHandler, $uibModalInstance, SelectPriceData, ocProductPricing, toastr) {
+function CreateProductPriceModalController($exceptionHandler, $uibModalInstance, SelectPriceData, ocProductPricing, OrderCloudSDK) {
     var vm = this;
     if (!SelectPriceData.DefaultPriceSchedule) {
         vm.buyerName = SelectPriceData.Buyer.Name;
@@ -10,6 +10,10 @@ function CreateProductPriceModalController($exceptionHandler, $uibModalInstance,
         vm.selectedBuyer = SelectPriceData.Buyer;
         vm.selectedUserGroup = SelectPriceData.UserGroup;
     }
+    vm.currencies = [
+        'US', 'Canadian'
+    ];
+    vm.assignedCollections = [];
     vm.product = SelectPriceData.Product;
     vm.priceSchedule = {
         RestrictedQuantity: false,
@@ -22,13 +26,30 @@ function CreateProductPriceModalController($exceptionHandler, $uibModalInstance,
         $uibModalInstance.dismiss();
     };
 
+    vm.listAllAssetCollections = function(search) {
+        return OrderCloudSDK.UserGroups.List(vm.selectedBuyer.ID, {
+            search: search,
+            pageSize: 100
+        })
+        .then( data => {
+            vm.assetCollections = data;
+        });
+    };
+
     vm.submit = function () {
-        var userGroups = vm.selectedUserGroup ? [vm.selectedUserGroup] : [];
+        var userGroups = vm.assignedCollections.length ? vm.assignedCollections : [];
         if (SelectPriceData.DefaultPriceSchedule) vm.priceSchedule.Name = vm.product.Name + ' Default Price';
         vm.loading = ocProductPricing.CreatePrice(vm.product, vm.priceSchedule, vm.selectedBuyer, userGroups, SelectPriceData.DefaultPriceSchedule)
             .then(function (data) {
                 if (!SelectPriceData.DefaultPriceSchedule) {
-                    SelectPriceData.CurrentAssignments.push(data.Assignment);
+                    _.each(userGroups, group => { 
+                        group.BuyerID = vm.selectedBuyer.ID;
+                    });
+                    SelectPriceData.CurrentAssignments[data.NewPriceSchedule.ID] = {
+                        Buyers: [],
+                        PriceSchedule: data.NewPriceSchedule,
+                        UserGroups: userGroups
+                    };
                 }
                 $uibModalInstance.close({
                     SelectedPrice: data.NewPriceSchedule,

@@ -6,6 +6,7 @@ function ProductPricingController($q, $rootScope, $stateParams, $uibModal, toast
     var vm = this;
     vm.list = AssignmentList;
     vm.listAssignments = AssignmentData;
+    vm.product = SelectedProduct;
     var isDefault;
 
     vm.selectPrice = function (scope) {
@@ -14,13 +15,13 @@ function ProductPricingController($q, $rootScope, $stateParams, $uibModal, toast
                 vm.selectedPrice = scope.assignment;
                 vm.selectedPrice.PriceSchedule = data.PriceSchedule;
                 vm.selectedPrice.Availability = data.Buyers;
-                isDefault = SelectedProduct.DefaultPriceScheduleID === data.PriceSchedule.ID;
+                isDefault = vm.product.DefaultPriceScheduleID === data.PriceSchedule.ID;
             });
     };
 
-    if (SelectedProduct.DefaultPriceScheduleID && !$stateParams.pricescheduleid) {
+    if (vm.product.DefaultPriceScheduleID && !$stateParams.pricescheduleid) {
         vm.selectPrice({
-            assignment: vm.listAssignments[SelectedProduct.DefaultPriceScheduleID]
+            assignment: vm.listAssignments[vm.product.DefaultPriceScheduleID]
         });
     } else if ($stateParams.pricescheduleid && vm.listAssignments[$stateParams.pricescheduleid]) {
         vm.selectPrice({
@@ -57,5 +58,9 @@ function ProductPricingController($q, $rootScope, $stateParams, $uibModal, toast
                 toastr.success(vm.selectedPrice.PriceSchedule.Name + ' was deleted');
                 vm.selectedPrice = null;
             });
+    };
+
+    vm.createPrice = function() {
+        return ocProductPricing.CreateProductPrice(vm.product, vm.selectedPrice.Availability[0], vm.listAssignments);
     };
 }
