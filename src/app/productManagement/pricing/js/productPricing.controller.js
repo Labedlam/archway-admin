@@ -6,6 +6,7 @@ function ProductPricingController($state, $rootScope, $stateParams, $uibModal, t
     var vm = this;
     vm.list = AssignmentList;
     vm.listAssignments = AssignmentData;
+    vm.noPricesSet = _.keys(vm.listAssignments).length === 0;
     vm.product = SelectedProduct;
     var isDefault;
 
@@ -61,7 +62,8 @@ function ProductPricingController($state, $rootScope, $stateParams, $uibModal, t
     };
 
     vm.createPrice = function() {
-        return ocProductPricing.CreateProductPrice(vm.product, vm.selectedPrice.Availability[0], vm.listAssignments)
+        let availability = vm.selectedPrice ? vm.selectedPrice.Availability[0] : {};
+        return ocProductPricing.CreateProductPrice(vm.product, availability, vm.listAssignments)
             .then( () => {
                 $state.go('product.pricing', {productid: vm.product.ID}, {reload: true});
             });

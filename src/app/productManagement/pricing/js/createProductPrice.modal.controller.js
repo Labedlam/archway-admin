@@ -19,7 +19,10 @@ function CreateProductPriceModalController($exceptionHandler, $uibModalInstance,
         RestrictedQuantity: false,
         PriceBreaks: [],
         MinQuantity: 1,
-        OrderType: 'Standard'
+        OrderType: 'Standard',
+        xp: {
+            
+        }
     };
 
     vm.cancel = function () {

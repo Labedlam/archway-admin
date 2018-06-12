@@ -56,7 +56,7 @@
                 <div class="col-sm-9">
                     <input id="MinQuantity" name="MinQuantity" type="number" class="form-control"
                         min="1"
-                        ng-max="createProductPriceModal.priceSchedule.MaxQuantity"
+                        ng-max="createProductPriceModal.priceSchedule.xp.MaxQuantity"
                         ng-disabled="createProductPriceModal.priceSchedule.RestrictedQuantity"
                         ng-model="createProductPriceModal.priceSchedule.MinQuantity"/>
                 </div>
@@ -67,7 +67,7 @@
                     <input id="MaxQuantity" name="MaxQuantity" placeholder="(Optional)"  type="number" class="form-control"
                         ng-min="createProductPriceModal.priceSchedule.MinQuantity"
                         ng-disabled="createProductPriceModal.priceSchedule.RestrictedQuantity"
-                        ng-model="createProductPriceModal.priceSchedule.MaxQuantity"/>
+                        ng-model="createProductPriceModal.priceSchedule.xp.MaxQuantity"/>
                 </div>
             </fieldset>
         </div>
