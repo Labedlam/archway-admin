@@ -36,7 +36,7 @@
                 <label for="MinQuantity" class="col-sm-3 control-label">Min Quantity</label>
                 <div class="col-sm-9">
                     <input id="MinQuantity" name="MinQuantity" type="number" class="form-control" ng-disabled="editProductPriceModal.data.RestrictedQuantity"
-                        pattern="^[0-9]*[1-9][0-9]*$" pattern-err-type="positiveInteger" ng-max="editProductPriceModal.data.MaxQuantity"
+                        pattern="^[0-9]*[1-9][0-9]*$" pattern-err-type="positiveInteger" ng-max="editProductPriceModal.data.xp.MaxQuantity"
                         ng-model="editProductPriceModal.data.MinQuantity" />
                 </div>
             </fieldset>
@@ -45,7 +45,7 @@
                 <div class="col-sm-9">
                     <input id="MaxQuantity" name="MaxQuantity" type="number" class="form-control" ng-disabled="editProductPriceModal.data.RestrictedQuantity"
                         pattern="^[0-9]*[1-9][0-9]*$" pattern-err-type="positiveInteger" ng-min="editProductPriceModal.data.MinQuantity"
-                        ng-model="editProductPriceModal.data.MaxQuantity" />
+                        ng-model="editProductPriceModal.data.xp.MaxQuantity" />
                 </div>
             </fieldset>
             <fieldset class="form-group">
