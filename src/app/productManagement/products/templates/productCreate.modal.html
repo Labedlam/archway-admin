@@ -25,6 +25,22 @@
                 </div>
             </fieldset>
             <fieldset class="form-group">
+                <label for="ProductBrand" class="col-sm-3 control-label">Brand</label>
+                <div class="col-sm-9">
+                    <input id="ProductBrand" type="text" class="form-control" ng-model="productCreateModal.product.xp.Brand">
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ProductComments" class="col-sm-3 control-label">Comments</label>
+                <div class="col-sm-9">
+                    <input id="ProductComments" type="text" class="form-control" ng-model="productCreateModal.product.xp.Comments">
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ProductKeywords" class="col-sm-3 control-label">Keywords</label>
+                <tags-input class="col-sm-9" ng-model="productCreateModal.product.xp.Keywords"></tags-input>
+            </fieldset>
+            <fieldset class="form-group">
                 <label for="QuantityMultiplier" class="col-sm-3 control-label">Qty Multiplier</label>
                 <div class="col-sm-9">
                     <input id="QuantityMultiplier" type="number" class="form-control" min="1" ng-model="productCreateModal.product.QuantityMultiplier"
@@ -40,11 +56,20 @@
                     </div>
                 </div>
             </fieldset>
+            <fieldset class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <div class="checkbox">
+                        <label for="ProductApproval">
+                            <input id="ProductApproval" name="ProductApproval" type="checkbox" ng-model="productCreateModal.product.xp.ApprovalRequired"> Approval Required
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
         </div>
         <div ng-show="productCreateModal.steps[productCreateModal.currentStep].form == 'image'" ng-form="image">
             <fieldset>
                 <label class="sr-only" for="image">Upload a product image</label>
-                <oc-file-upload file-upload-model="productCreateModal.product.xp" file-upload-options="productCreateModal.fileUploadOptions"></oc-file-upload>
+                <oc-file-upload product="productCreateModal.product" file-upload-model="productCreateModal.product.xp" file-upload-options="productCreateModal.fileUploadOptions"></oc-file-upload>
             </fieldset>
         </div>
         <div ng-show="productCreateModal.steps[productCreateModal.currentStep].form == 'pricing'" ng-form="pricing">

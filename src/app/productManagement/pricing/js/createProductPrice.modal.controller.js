@@ -7,7 +7,7 @@ function CreateProductPriceModalController($exceptionHandler, $uibModalInstance,
         vm.buyerName = SelectPriceData.Buyer.Name;
         vm.userGroupName = SelectPriceData.UserGroup ? SelectPriceData.UserGroup.Name : null;
         vm.previousPriceSchedule = angular.copy(SelectPriceData.Product.SelectedPrice);
-        vm.selectedBuyer = SelectPriceData.Buyer;
+        vm.selectedBuyer = !_.isEmpty(SelectPriceData.Buyer) ? SelectPriceData.Buyer : {ID: 'ppg'};
         vm.selectedUserGroup = SelectPriceData.UserGroup;
     }
     vm.currencies = [

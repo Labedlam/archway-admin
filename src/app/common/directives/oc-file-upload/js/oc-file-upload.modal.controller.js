@@ -79,12 +79,23 @@ function FileUploadModalController($http, $timeout, devapiurl, OrderCloudSDK, $u
     }
 
     vm.submit = function() {
-        vm.product.xp.Images = [];
-        vm.loading = OrderCloudSDK.Products.Patch( vm.product.ID, { xp: vm.product.xp } ).then( prod => {
+        if (vm.options.action === 'create') {
+            if (vm.product.xp.Keywords && vm.product.xp.Keywords.length) vm.product.xp.Keywords = _.map(vm.product.xp.Keywords, 'text');
+            vm.loading = OrderCloudSDK.Products.Create(vm.product).then( prod => {
+                return postImage(prod);
+            });
+        } else {
+            vm.product.xp.Images = [];
+            vm.loading = OrderCloudSDK.Products.Patch( vm.product.ID, { xp: vm.product.xp } ).then( prod => {
+                return postImage(prod);
+            });
+        }
+
+        function postImage(product) {
             let formBody = new FormData();
             formBody.append('imageUpload', vm.file, vm.file.name);
             return $http({
-                url: `${devapiurl}/productimage/${vm.product.ID}`,
+                url: `${devapiurl}/productimage/${product.ID}`,
                 method: 'POST',
                 data: formBody,
                 headers: {
@@ -94,7 +105,7 @@ function FileUploadModalController($http, $timeout, devapiurl, OrderCloudSDK, $u
             }).then(data => {
                 return $uibModalInstance.close(data.data);
             });
-        });
+        }
     };
 
     vm.cancel = function() {

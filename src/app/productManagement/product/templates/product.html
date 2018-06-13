@@ -38,6 +38,12 @@
                         </div>
                     </fieldset>
                     <fieldset class="form-group">
+                        <label for="ProductBrand" class="col-sm-3 control-label">Brand</label>
+                        <div class="col-sm-9">
+                            <input id="ProductBrand" type="text" class="form-control" ng-model="product.model.xp.Brand">
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-group">
                         <label for="ProductComments" class="col-sm-3 control-label">Comments</label>
                         <div class="col-sm-9">
                             <input id="ProductComments" type="text" class="form-control" ng-model="product.model.xp.Comments">
@@ -64,11 +70,6 @@
                             <div class="checkbox">
                                 <label for="ProductActive">
                                     <input id="ProductActive" name="ProductActive" type="checkbox" ng-model="product.model.Active"> Active
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="ProductFeatured">
-                                    <input id="ProductFeatured" name="ProductFeatured" type="checkbox" ng-model="product.model.xp.Featured"> Featured
                                 </label>
                             </div>
                             <div class="checkbox">
