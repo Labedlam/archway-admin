@@ -36,6 +36,7 @@
     "B2B"
   ],
   "dependencies": {
+    "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.6.1",
     "browser-sync": "2.11.1",
     "del": "2.2.0",

@@ -10,6 +10,8 @@ var source = './src/',
     gulp_dir = './gulp/',
     fs = require('fs');
 
+require('babel-polyfill');
+
 try {
     var saasConfig = require(source + 'app/saas/gulp.config');
 } catch(ex) {
