@@ -110,11 +110,11 @@ function getConstants() {
             result.hostedsiteurl = 'https://archway-ppg-test.azurewebsites.net';            
             break;
         default:
-            result.imagestorageurl = 'https://archwayppg.blob.core.windows.net/webimages/';
+            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://auth.ordercloud.io';
             result.apiurl = 'https://api.ordercloud.io';
-            result.devapiurl = 'https://archway-ppg.azurewebsites.net/api';
-            result.hostedsiteurl = 'https://archway-ppg.azurewebsites.net';            
+            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
+            result.hostedsiteurl = 'https://archway-ppg-test.azurewebsites.net';             
             break;
     }
     if (process.env.apiurl && process.env.authurl) {
