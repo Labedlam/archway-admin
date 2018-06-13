@@ -11,5 +11,4 @@ function AppController($state, $ocMedia, OrderCloudSDK, ocStateLoading, ocIsTouc
     vm.stateLoading = ocStateLoading.Watch;
     vm.logout = OrderCloudSDK.Auth.Logout;
     vm.userIsAuthorized = ocRoles.UserIsAuthorized;
-    angular.lowercase = text => text.toLowerCase();
 }
