@@ -1,23 +1,28 @@
 <form name="createProductPriceModal.form" ng-submit="createProductPriceModal.submit()" autocomplete="off" novalidate oc-pretty-submit>
     <div class="modal-header">
         <button type="button" class="close" ng-click="createProductPriceModal.cancel()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <span class="text-muted">{{(createProductPriceModal.buyerName ? 'Create pricing for ' : 'Default pricing for ') + (createProductPriceModal.userGroupName || createProductPriceModal.buyerName)}}</span>
         <h4 class="modal-title">Product: <b>{{createProductPriceModal.product.Name}}</b></h4>
     </div>
     <div class="modal-body">
         <div class="form-horizontal">
-            <fieldset class="form-group" ng-if="createProductPriceModal.buyerName">
+            <fieldset class="form-group">
                 <label for="ID" class="col-sm-3 control-label">Price ID</label>
                 <div class="col-sm-9">
                     <input id="ID" name="ID" type="text" placeholder="(Optional)" class="form-control" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="createProductPriceModal.priceSchedule.ID"/>
                 </div>
             </fieldset>
-            <fieldset class="form-group" ng-if="createProductPriceModal.buyerName">
+            <fieldset class="form-group">
                 <label for="Name" class="col-sm-3 control-label">Name</label>
                 <div class="col-sm-9">
                     <input id="Name" name="Name" type="text" class="form-control" ng-model="createProductPriceModal.priceSchedule.Name" required/>
                 </div>
             </fieldset>
+            <fieldset class="form-group">
+                    <label for="Name" class="col-sm-3 control-label">Currency</label>
+                    <div class="col-sm-9">
+                        <select id="Currency" name="Currency" class="form-control" ng-options="currency for currency in createProductPriceModal.currencies" ng-model="createProductPriceModal.priceSchedule.xp.Currency" required></select>
+                    </div>
+                </fieldset>
             <fieldset class="form-group">
                 <div class="col-sm-offset-3 col-sm-9">
                     <div class="checkbox">
@@ -51,7 +56,7 @@
                 <div class="col-sm-9">
                     <input id="MinQuantity" name="MinQuantity" type="number" class="form-control"
                         min="1"
-                        ng-max="createProductPriceModal.priceSchedule.MaxQuantity"
+                        ng-max="createProductPriceModal.priceSchedule.xp.MaxQuantity"
                         ng-disabled="createProductPriceModal.priceSchedule.RestrictedQuantity"
                         ng-model="createProductPriceModal.priceSchedule.MinQuantity"/>
                 </div>
@@ -62,7 +67,7 @@
                     <input id="MaxQuantity" name="MaxQuantity" placeholder="(Optional)"  type="number" class="form-control"
                         ng-min="createProductPriceModal.priceSchedule.MinQuantity"
                         ng-disabled="createProductPriceModal.priceSchedule.RestrictedQuantity"
-                        ng-model="createProductPriceModal.priceSchedule.MaxQuantity"/>
+                        ng-model="createProductPriceModal.priceSchedule.xp.MaxQuantity"/>
                 </div>
             </fieldset>
         </div>
@@ -71,6 +76,25 @@
         <hr />
         <h4>Price Breaks</h4>
         <oc-price-breaks priceschedule="createProductPriceModal.priceSchedule"></oc-price-breaks>
+        <hr />
+        <!--TODO: Asset collection assignments-->
+        <h4>Assignments</h4>
+        <fieldset class="form-group">
+            <label for="AssetCollections" class="col-sm-3 control-label">Asset Collections</label>
+            <ui-select class="col-sm-9" id="AssetCollections" ng-model="createProductPriceModal.assignedCollections" close-on-select="false" multiple>
+                <ui-select-match placeholder="Search asset collections..." allow-clear="true">
+                    <span ng-bind-html="$select.selected[$index].Name"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="asset as asset in (createProductPriceModal.assetCollections.Items | filter: $select.search) track by $index" refresh="createProductPriceModal.listAllAssetCollections($select.search)" refresh-delay="300">
+                    <p>
+                        <b>{{asset.Name}}</b>
+                        <br>
+                        <span class="text-small text-muted">({{asset.ID}})</span>
+                    </p>
+                </ui-select-choices>
+            </ui-select>
+        </fieldset>
+        <hr />
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary btn-block" ng-disabled="createProductPriceModal.form.$invalid || !createProductPriceModal.priceSchedule.PriceBreaks.length" cg-busy="createProductPriceModal.loading">Save Selection</button>
