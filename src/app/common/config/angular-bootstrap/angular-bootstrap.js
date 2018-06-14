@@ -1,7 +1,10 @@
 angular.module('orderCloud')
     .config(function(uibDatepickerConfig, uibDatepickerPopupConfig, $uibModalProvider, $uibTooltipProvider) {
         //fix deprecated angular.lowercase
-        angular.lowercase = text => text.toLowerCase();
+        angular.lowercase = function(text){
+            if(text ===  undefined) return;
+            text.toLowerCase();
+        };
 
         //Default Datepicker Options
         uibDatepickerConfig.showWeeks = false;
