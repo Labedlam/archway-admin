@@ -14,8 +14,8 @@
   "license": "MIT",
   "main": "index",
   "engines": {
-    "node": "6.11.4",
-    "npm": "3.10.10"
+    "node": "6.11.1",
+    "npm": "3.6.0"
   },
   "cacheDirectories": [
     "node_modules",

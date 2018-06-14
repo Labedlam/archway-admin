@@ -9,8 +9,8 @@ var source = './src/',
     root = __dirname,
     gulp_dir = './gulp/',
     fs = require('fs');
+    
 
-require('babel-polyfill');
 
 try {
     var saasConfig = require(source + 'app/saas/gulp.config');
@@ -76,9 +76,14 @@ module.exports = {
         deps: false,
         constants: saasConfig.getConstants ? saasConfig.getConstants() : getConstants()
     },
-    autoprefixerSettings: {
-        browsers: ['last 2 versions'],
-        cascade: true
+    babelSettings: {
+        'presets': [
+            [ 'env', {
+                'targets': {
+                    'browsers': [ 'last 2 versions' ]
+                }
+            } ]
+        ]
     },
     jsCache: 'jsscripts',
     indentSize: 4,

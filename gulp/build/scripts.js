@@ -24,7 +24,7 @@ gulp.task('scripts', ['clean:scripts'], function() {
         .pipe(cache(config.jsCache))
         .pipe(ngAnnotate())
         .pipe(wrapper(config.wrapper))
-        .pipe(babel())
+        .pipe(babel( config.babelSettings ))
         .pipe(beautify({indentSize: config.indentSize}))
         .pipe(gulp.dest(config.build + 'app/'));
 });
@@ -37,7 +37,7 @@ gulp.task('rebuild-scripts', function() {
         .pipe(cache('jsscripts'))
         .pipe(ngAnnotate())
         .pipe(wrapper(config.wrapper))
-        .pipe(babel())
+        .pipe(babel( config.babelSettings ))
         .pipe(beautify({indentSize: config.indentSize}))
         .pipe(gulp.dest(config.build + 'app/'));
 });
