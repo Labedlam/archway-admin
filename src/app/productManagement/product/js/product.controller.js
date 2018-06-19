@@ -57,7 +57,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, images
     function updateProduct() {
         var currentPrice = angular.copy(vm.model.DefaultPriceSchedule);
         var partial = _.pick(vm.model, ['ID', 'Name', 'Description', 'QuantityMultiplier', 'Inventory', 'Active']);
-        var partialXP = _.pick(vm.model.xp, ['Featured', 'ApprovalRequired']);
+        var partialXP = _.pick(vm.model.xp, ['Featured', 'ApprovalRequired', 'Brand', 'Keywords', 'Comments', 'UnitOfMeasure', 'Images']);
         partial.xp = partialXP;
         if(vm.keywords.length) partial.xp.Keywords = getKeywords();
         

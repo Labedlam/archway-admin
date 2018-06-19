@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .controller('ProductCreateModalCtrl', ProductCreateModalController);
 
-function ProductCreateModalController($q, $exceptionHandler, $uibModalInstance, $state, OrderCloudSDK) {
+function ProductCreateModalController($q, $exceptionHandler, $uibModalInstance, $state, imagestorageurl, OrderCloudSDK) {
     var vm = this;   
 
     vm.product = {
@@ -11,7 +11,9 @@ function ProductCreateModalController($q, $exceptionHandler, $uibModalInstance, 
             MinQuantity: 1,
             OrderType: 'Standard'
         },
-        xp: {},
+        xp: {
+            Images: []
+        },
         Active: true,
         QuantityMultiplier: 1
     };
@@ -61,10 +63,16 @@ function ProductCreateModalController($q, $exceptionHandler, $uibModalInstance, 
     vm.listAllAdminAddresses = listAllAdminAddresses;
 
     vm.fileUploadOptions = {
-        keyname: 'image',
+        keyname: 'Images',
+        src: imagestorageurl,
+        folder: null,
         extensions: 'jpg, png, gif, jpeg, tiff',
-        uploadText: 'Upload an image',
-        replaceText: 'Replace image'
+        invalidExtensions: null,
+        onUpdate: null,
+        multiple: false,
+        addText: 'Upload an image',
+        replaceText: 'Replace',
+        action: 'create'
     };
 
     function listAllAdminAddresses(search) {
@@ -102,7 +110,7 @@ function ProductCreateModalController($q, $exceptionHandler, $uibModalInstance, 
 
         function _createProduct() {
             if (vm.product.Inventory && !vm.product.Inventory.Enabled) delete vm.product.Inventory;
-            OrderCloudSDK.Products.Create(vm.product)
+            OrderCloudSDK.Products.Update(vm.product)
                 .then(function (data) {
                         $uibModalInstance.close(data);
                 });
