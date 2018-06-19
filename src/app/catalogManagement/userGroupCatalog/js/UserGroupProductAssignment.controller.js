@@ -111,20 +111,21 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
        
  
         //update assignment
-        vm.searchLoading = $q.all(setPSQueue).then(()=>{
-            ocCatalog.Products.UpdateAssignments(CurrentAssignments, vm.changedAssignments, $stateParams.catalogid, $stateParams.buyerid, vm.userGroup.ID )
-            .then(function(data) {
-                angular.forEach(data.Errors, function(ex) {
-                    $exceptionHandler(ex);
-                });
-                CurrentAssignments = data.UpdatedAssignments;
-
-                changedCheck();
-                selectedCheck();
-
-                toastr.success('Product assignments updated.');
-            });
-        });
+       return vm.searchLoading = $q.all(setPSQueue)
+            .then(()=>{
+                return  ocCatalog.Products.UpdateAssignments(CurrentAssignments, vm.changedAssignments, $stateParams.catalogid, $stateParams.buyerid, vm.userGroup.ID )
+                    .then(function(data) {
+                        angular.forEach(data.Errors, function(ex) {
+                            $exceptionHandler(ex);
+                        });
+                        CurrentAssignments = data.UpdatedAssignments;
+                        changedCheck();
+                        selectedCheck();
+                        toastr.success('Product assignments updated.');
+                    })
+          
+        })
+        .catch((err)=>toastr.error(err));
 
         function setPriceSchedule(assignment){
             return OrderCloudSDK.PriceSchedules.List({search: assignment.new.ProductID})
@@ -151,13 +152,11 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
                                     return $q.when();
                               });  
                         }else{
-                            throw `${assignment.ProductID} needs a price schedule assigned to it` 
-                            $q.reject(`${assignment.ProductID} needs a price schedule assigned to it`);
+                           return $q.reject(`${assignment.new.ProductID} needs a price schedule assigned to it`);
                         } 
 
                     }else{
-                        throw `Error, No region assigned to user group` ;
-                        $q.reject( `Error, No region assigned to user group`);
+                        return $q.reject( `Error, No region assigned to user group`);
                     }
             })
         }
