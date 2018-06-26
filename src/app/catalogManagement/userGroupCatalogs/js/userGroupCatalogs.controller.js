@@ -7,7 +7,6 @@ function UserGroupCatalogsController($exceptionHandler, $state, $stateParams, to
     vm.list = CatalogList;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
-
     //Check if search was used
     vm.searchResults = Parameters.search && Parameters.search.length > 0;
 
