@@ -49,7 +49,12 @@ function ordercloudFileUpload($uibModal, $ocFiles, OrderCloudSDK, toastr, ocConf
                         ? (scope.fileUploadModel[index] = data) 
                         : scope.fileUploadModel[scope.fileUploadOptions.keyname] ? scope.fileUploadModel[scope.fileUploadOptions.keyname].push(data) : scope.fileUploadModel[scope.fileUploadOptions.keyname] = [data];
                 } else {
-                    scope.fileUploadModel[scope.fileUploadOptions.keyname][0] = data.xp.Images[0];
+                    if (scope.fileUploadOptions.action == 'create') {
+                        scope.product.Image = data;
+                        return;
+                    } else {
+                        scope.fileUploadModel[scope.fileUploadOptions.keyname][0] = data.xp.Images[0];
+                    }
                 }
                 toastr.success('Product image updated');
             });

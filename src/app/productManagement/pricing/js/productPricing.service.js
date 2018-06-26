@@ -528,6 +528,9 @@ function ocProductPricingService($q, $uibModal, OrderCloudSDK, ocConfirm) {
                         CurrentAssignments: CurrentAssignments,
                         DefaultPriceSchedule: DefaultPriceSchedule
                     };
+                },
+                Buyer: function() {
+                    return OrderCloudSDK.Buyers.Get('PPG');
                 }
             }
         }).result;

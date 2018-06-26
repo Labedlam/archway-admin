@@ -1,13 +1,13 @@
 angular.module('orderCloud')
     .controller('CreateProductPriceModalCtrl', CreateProductPriceModalController);
 
-function CreateProductPriceModalController($exceptionHandler, $uibModalInstance, SelectPriceData, ocProductPricing, OrderCloudSDK) {
+function CreateProductPriceModalController($exceptionHandler, $uibModalInstance, SelectPriceData, Buyer, ocProductPricing, OrderCloudSDK) {
     var vm = this;
     if (!SelectPriceData.DefaultPriceSchedule) {
         vm.buyerName = SelectPriceData.Buyer.Name;
         vm.userGroupName = SelectPriceData.UserGroup ? SelectPriceData.UserGroup.Name : null;
         vm.previousPriceSchedule = angular.copy(SelectPriceData.Product.SelectedPrice);
-        vm.selectedBuyer = !_.isEmpty(SelectPriceData.Buyer) ? SelectPriceData.Buyer : {ID: 'ppg'};
+        vm.selectedBuyer = !_.isEmpty(SelectPriceData.Buyer) ? SelectPriceData.Buyer : Buyer;
         vm.selectedUserGroup = SelectPriceData.UserGroup;
     }
     vm.currencies = [

@@ -42,6 +42,12 @@
                         </div>
                     </fieldset>
                     <fieldset class="form-group">
+                        <label for="region" class="col-sm-4 control-label">Region</label>
+                        <div class="col-sm-8">
+                            <select id="region" class="form-control" ng-options="region for region in userGroup.regions"  ng-model="userGroup.model.xp.Region" required></select>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-group">
                         <div class="col-sm-offset-4 col-sm-8">
                             <button type="submit" class="btn btn-primary btn-block">Update User Group</button>
                         </div>
