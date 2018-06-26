@@ -93,7 +93,7 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
     };
 
     vm.addProduct = function(){
-        $state.go('prdouctAssignmetUpdate', ocParameters.Create(vm.parameters, true));
+        $state.go('productAssignmentUpdate', ocParameters.Create(vm.parameters, true));
     };
 
     vm.removeAssignment = function(scope){

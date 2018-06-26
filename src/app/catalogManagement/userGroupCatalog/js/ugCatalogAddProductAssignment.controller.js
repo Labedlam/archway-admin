@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .controller('UGCatalogAddProductAssignCtrl', UGCatalogAddProductAssignModalController)
 ;
 
-function UGCatalogAddProductAssignModalController( $q, $stateParams, OrderCloudSDK, ProductList, Category, UserGroup, Parameters, CurrentAssignments, ocCatalog){
+function UGCatalogAddProductAssignModalController( $q, $state, $stateParams, OrderCloudSDK, ProductList, Category, UserGroup, Parameters, CurrentAssignments, ocCatalog, ocParameters, toastr){
     let vm = this;
     vm.parameters =  Parameters;
     vm.list = ProductList;
@@ -16,7 +16,7 @@ function UGCatalogAddProductAssignModalController( $q, $stateParams, OrderCloudS
     vm.searchResults = Parameters.search && Parameters.search.length > 0;
 
     vm.filter = function(resetPage) {
-        $state.go('productAssignment', ocParameters.Create(vm.parameters, resetPage));
+        $state.go('productAssignmentUpdate', ocParameters.Create(vm.parameters, resetPage));
     };
 
     vm.search = function() {
