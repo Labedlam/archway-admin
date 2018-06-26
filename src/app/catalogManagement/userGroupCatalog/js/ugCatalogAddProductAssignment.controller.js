@@ -9,6 +9,7 @@ function UGCatalogAddProductAssignModalController( $q, $state, $stateParams, Ord
     vm.category = Category;
     vm.userGroup =  UserGroup;
     vm.parameters = Parameters;
+    CurrentAssignments =  CurrentAssignments.Items;
 
     //Sort by is a filter on mobile devices
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;

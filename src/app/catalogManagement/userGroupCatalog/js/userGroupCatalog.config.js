@@ -72,11 +72,11 @@ function UserGroupCatalogConfig($stateProvider) {
                     return OrderCloudSDK.UserGroups.Get($stateParams.buyerid, $stateParams.usergroupid)
                 },               
                 CurrentAssignments: function($stateParams, ocCatalog) {
-                    //get all products assigned to ug id.
+                    //get ALL products ids assigned to UG id.
                     return ocCatalog.Products.GetAssignments($stateParams.categoryid, $stateParams.catalogid, $stateParams.usergroupid);
                 },
                 ProductList: function(OrderCloudSDK, ocCatalog, Parameters, CurrentAssignments) {
-                    //service will grab all products assigned to this category id, then match Ids with current assignments to bring back specific products assigned to the ug. 
+                    //service will grab all products assigned to this category id, then match Ids against all assignments on a UG , then bring back products assigned to the ug and catalog. 
                    return  ocCatalog.Products.GetCategoryProducts(CurrentAssignments, Parameters.catalogid, Parameters.categoryid);
                 }
             }
@@ -97,14 +97,16 @@ function UserGroupCatalogConfig($stateProvider) {
                 UserGroup: function($stateParams, OrderCloudSDK){
                     return OrderCloudSDK.UserGroups.Get($stateParams.buyerid, $stateParams.usergroupid)
                 },               
-                CurrentAssignments: function($stateParams, ocCatalog) {
-                    return ocCatalog.Products.GetAssignments($stateParams.categoryid, $stateParams.catalogid, $stateParams.usergroupid);
+                CurrentAssignments: function($stateParams, ocCatalog, Parameters) {
+                    return ocCatalog.Products.GetAssignments($stateParams.categoryid, $stateParams.catalogid, $stateParams.usergroupid)
+                        .then(allUGProducts =>{
+                            return  ocCatalog.Products.GetCategoryProducts(allUGProducts, Parameters.catalogid, Parameters.categoryid)
+                        })
                 },
-         
                 ProductList: function(OrderCloudSDK, ocCatalog, Parameters, CurrentAssignments) {
                     return OrderCloudSDK.Products.List(Parameters)
                         .then(function(data) {
-                            return ocCatalog.Products.MapAssignments(CurrentAssignments, data);
+                            return ocCatalog.Products.MapAssignments(CurrentAssignments.Items, data);
                         });
                 }
             }

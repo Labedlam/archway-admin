@@ -152,7 +152,7 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                     assignments = assignments.concat(result.Items);
                 });
 
-                 _.each( UGProductassignments, (ugAssignment)=>{
+                 _.each( UGProductassignments, (ugAssignment) =>{
                     var match =  _.find( assignments, (assignment) => assignment.ProductID === ugAssignment.ProductID )
                     if (match) categoryAssignments.push(match);
                 } ) 
