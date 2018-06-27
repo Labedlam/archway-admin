@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .controller('UsersCtrl', UsersController)
 ;
 
-function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters) {
+function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters, impersonationClientId) {
     var vm = this;
     vm.list = UserList;
     vm.parameters = Parameters;
@@ -88,7 +88,7 @@ function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloud
 
     vm.impersonateUser = function(scope) {
         let impersonation = {
-            clientID: '68C34D8F-801F-47F5-9E3B-E8CB7339F209',
+            clientID: impersonationClientId, 
             roles: ['AddressReader', 'BuyerReader', 'MeAddressAdmin', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'Shopper']
         };
         return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)

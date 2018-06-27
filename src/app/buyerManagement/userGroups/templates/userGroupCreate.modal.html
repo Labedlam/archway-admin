@@ -1,11 +1,11 @@
 <form name="userGroupCreateModal.form" class="form-horizontal" ng-submit="userGroupCreateModal.submit()" novalidate oc-pretty-submit>
     <div class="modal-header">
         <button type="button" class="close" aria-label="Close" ng-click="userGroupCreateModal.cancel()"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">New User Group</h4>
+        <h4 class="modal-title">New Asset Collection</h4>
     </div>
     <div class="modal-body">
         <div class="form-group">
-            <label for="UserGroupID" class="control-label col-sm-3">User Group ID</label>
+            <label for="UserGroupID" class="control-label col-sm-3">Asset Collection ID</label>
             <div class="col-sm-9">
                 <input id="UserGroupID" name="ID" placeholder="(Optional)" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" class="form-control" ng-model="userGroupCreateModal.userGroup.ID"/>
             </div>
