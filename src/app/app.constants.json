@@ -1,6 +1,7 @@
 {
   "appname": "Angular Seller",
   "clientid": "2493C95E-537A-4066-929E-9D15E7DF613B",
+  "impersonationClientId" : "68C34D8F-801F-47F5-9E3B-E8CB7339F209",
   "environment": "prod",
   "defaultstate": "home",
   "html5mode": true,
