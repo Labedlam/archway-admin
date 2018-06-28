@@ -2,10 +2,11 @@ angular.module('orderCloud')
     .controller('UsersCtrl', UsersController)
 ;
 
-function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters, impersonationClientId) {
+function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters, CurrentUser, impersonationClientId) {
     var vm = this;
     vm.list = UserList;
     vm.parameters = Parameters;
+    vm.adminUser = CurrentUser;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
 
     //Check if search was used
@@ -93,7 +94,7 @@ function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloud
         };
         return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)
             .then(function(data) {
-                let buyerAppUrl = `${hostedsiteurl}/punchout?token=${data.access_token}`;
+                let buyerAppUrl = `${hostedsiteurl}/punchout?token=${data.access_token}&user=${vm.adminUser.ID}`;
                 window.open(buyerAppUrl, '_blank');
             });
     };
