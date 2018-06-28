@@ -81,9 +81,7 @@ function FileUploadModalController($http, $timeout, devapiurl, OrderCloudSDK, $u
     vm.submit = function() {
         if (vm.options.action === 'create') {
             if (vm.product.xp.Keywords && vm.product.xp.Keywords.length) vm.product.xp.Keywords = _.map(vm.product.xp.Keywords, 'text');
-            vm.loading = OrderCloudSDK.Products.Create(vm.product).then( prod => {
-                return postImage(prod);
-            });
+            return $uibModalInstance.close(vm.file);
         } else {
             vm.product.xp.Images = [];
             vm.loading = OrderCloudSDK.Products.Patch( vm.product.ID, { xp: vm.product.xp } ).then( prod => {

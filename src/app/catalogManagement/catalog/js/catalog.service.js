@@ -9,6 +9,7 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         DeleteCategory: _deleteCategory,
         Products: {
             GetAssignments: _getProductAssignments,
+            GetCategoryProducts: _getCategoryProducts,
             MapAssignments: _mapProductAssignments,
             CompareAssignments: _compareProductAssignments,
             UpdateAssignments: _updateProductAssignments
@@ -124,6 +125,52 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
 
         return deferred.promise;
     }
+    //filters  productAssignment by category. grab category products. compare and return an array of assignmentlist back with product info
+    function _getCategoryProducts( UGProductassignments , catalogid, categoryid ){
+        var queue=[];
+       
+        var assignments = [];
+
+        var options = {
+            categoryID: categoryid,
+            page: 1,
+            pageSize: 100
+        };
+        var categoryAssignments = [];
+
+        return  OrderCloudSDK.Categories.ListProductAssignments(catalogid, options).then(function(data) {
+            assignments = data.Items;
+            var page = data.Meta.Page;
+            var queue = [];
+            while (page <= data.Meta.TotalPages) {
+                page++;
+                options.page = page;
+                queue.push(OrderCloudSDK.Categories.ListProductAssignments(catalogid, options));
+            }
+            return $q.all(queue).then(function(results) {
+                angular.forEach(results, function(result) {
+                    assignments = assignments.concat(result.Items);
+                });
+
+                 _.each( UGProductassignments, (ugAssignment) =>{
+                    var match =  _.find( assignments, (assignment) => assignment.ProductID === ugAssignment.ProductID )
+                    if (match) categoryAssignments.push(match);
+                } ) 
+
+                _.each( categoryAssignments, (assignment )=> {
+                    queue.push( function(){
+                        return OrderCloudSDK.Products.Get(assignment.ProductID)
+                            .then((product)=>{
+                                return assignment.Product = product;
+                            });
+                    }())
+                });
+
+                 return $q.all(queue).then(()=> {return {Items: categoryAssignments }} );
+                });
+            });
+    }
+
 
     function _mapProductAssignments(allAssignments, productList) {
         productList.Items = _.map(productList.Items, function(product) {
@@ -207,11 +254,12 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                     if(userGroupID){
                         OrderCloudSDK.Products.DeleteAssignment(diff.old.ProductID, buyerID, {userGroupID: diff.old.UserGroupID})
                         .then(function() {
-                            OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
-                            .then(function() {
+                            //TODO:if a product is assigned to more than one ug,check to see that this is the last assignment before deleting this assignment.
+                            // OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
+                            // .then(function() {
                                 allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
                                 d.resolve();
-                            })
+                            // })
                         })
                         .catch(function(ex) {
                             errors.push(ex);

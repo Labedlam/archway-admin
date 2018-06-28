@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .controller('ProductCreateModalCtrl', ProductCreateModalController);
 
-function ProductCreateModalController($q, $exceptionHandler, $uibModalInstance, $state, imagestorageurl, OrderCloudSDK) {
+function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalInstance, $state, imagestorageurl, devapiurl, OrderCloudSDK) {
     var vm = this;   
 
     vm.product = {
@@ -110,10 +110,27 @@ function ProductCreateModalController($q, $exceptionHandler, $uibModalInstance, 
 
         function _createProduct() {
             if (vm.product.Inventory && !vm.product.Inventory.Enabled) delete vm.product.Inventory;
-            OrderCloudSDK.Products.Update(vm.product)
+            OrderCloudSDK.Products.Update(vm.product.ID, vm.product)
                 .then(function (data) {
+                    if (vm.product.Image) {
+                        let formBody = new FormData();
+                        formBody.append('imageUpload', vm.product.Image, vm.product.Image.name);
+                        return $http({
+                            url: `${devapiurl}/productimage/${data.ID}`,
+                            method: 'POST',
+                            data: formBody,
+                            headers: {
+                                'Authorization': `Bearer ${OrderCloudSDK.GetToken()}`,
+                                'Content-Type': undefined
+                            }
+                        }).then(data => {
+                            return $uibModalInstance.close(data.data);
+                        });
+                    } else {
                         $uibModalInstance.close(data);
+                    }
                 });
+            
         }
     }
 

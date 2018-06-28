@@ -61,9 +61,6 @@ function UserGroupCatalogConfig($stateProvider) {
             templateUrl: 'catalogManagement/userGroupCatalog/templates/userGroupProductAssignment.html',
             controller: 'UserGroupProductAssignmentCtrl',
             controllerAs: 'ugProductAssignment',
-            // data: {
-            //     pageTitle: 'ProductAssignment'
-            // },
             resolve:{
                 Parameters: function($stateParams, ocParameters) {
                     return ocParameters.Get($stateParams);
@@ -75,14 +72,43 @@ function UserGroupCatalogConfig($stateProvider) {
                     return OrderCloudSDK.UserGroups.Get($stateParams.buyerid, $stateParams.usergroupid)
                 },               
                 CurrentAssignments: function($stateParams, ocCatalog) {
+                    //get ALL products ids assigned to UG id.
                     return ocCatalog.Products.GetAssignments($stateParams.categoryid, $stateParams.catalogid, $stateParams.usergroupid);
+                },
+                ProductList: function(OrderCloudSDK, ocCatalog, Parameters, CurrentAssignments) {
+                    //service will grab all products assigned to this category id, then match Ids against all assignments on a UG , then bring back products assigned to the ug and catalog. 
+                   return  ocCatalog.Products.GetCategoryProducts(CurrentAssignments, Parameters.catalogid, Parameters.categoryid);
+                }
+            }
+        })
+        .state('productAssignmentUpdate', {
+            parent: 'userGroup',
+            url: '/:catalogid/:categoryid/addAssignment?search&page&pageSize&searchOn&sortBy&filters',
+            templateUrl: 'catalogManagement/userGroupCatalog/templates/addProductAssignment.html',
+            controller: 'UGCatalogAddProductAssignCtrl',
+            controllerAs: 'ugAddProductAssignment',
+            resolve:{
+                Parameters: function($stateParams, ocParameters) {
+                    return ocParameters.Get($stateParams);
+                },
+                Category: function($stateParams, OrderCloudSDK){
+                    return OrderCloudSDK.Categories.Get($stateParams.catalogid, $stateParams.categoryid);
+                },
+                UserGroup: function($stateParams, OrderCloudSDK){
+                    return OrderCloudSDK.UserGroups.Get($stateParams.buyerid, $stateParams.usergroupid)
+                },               
+                CurrentAssignments: function($stateParams, ocCatalog, Parameters) {
+                    return ocCatalog.Products.GetAssignments($stateParams.categoryid, $stateParams.catalogid, $stateParams.usergroupid)
+                        .then(allUGProducts =>{
+                            return  ocCatalog.Products.GetCategoryProducts(allUGProducts, Parameters.catalogid, Parameters.categoryid)
+                        })
                 },
                 ProductList: function(OrderCloudSDK, ocCatalog, Parameters, CurrentAssignments) {
                     return OrderCloudSDK.Products.List(Parameters)
                         .then(function(data) {
-                            return ocCatalog.Products.MapAssignments(CurrentAssignments, data);
+                            return ocCatalog.Products.MapAssignments(CurrentAssignments.Items, data);
                         });
                 }
             }
-        });
+        })
 }
