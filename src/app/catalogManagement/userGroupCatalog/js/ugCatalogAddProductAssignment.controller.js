@@ -1,24 +1,23 @@
 angular.module('orderCloud')
-    .controller('UserGroupProductAssignmentCtrl', UserGroupProductAssignmentController)
+    .controller('UGCatalogAddProductAssignCtrl', UGCatalogAddProductAssignModalController)
 ;
 
-function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toastr, OrderCloudSDK, ocParameters, ocCatalog, $stateParams, Parameters, Category, UserGroup, CurrentAssignments, ProductList ){
-    var vm = this;
-    // vm.list = ProductList;
+function UGCatalogAddProductAssignModalController( $q, $state, $stateParams, OrderCloudSDK, ProductList, Category, UserGroup, Parameters, CurrentAssignments, ocCatalog, ocParameters, toastr){
+    let vm = this;
+    vm.parameters =  Parameters;
     vm.list = ProductList;
-    vm.selectedCategory = Category;
-    vm.catalogID = Parameters.catalogid;
-    vm.userGroup = UserGroup;
-
-    
+    vm.category = Category;
+    vm.userGroup =  UserGroup;
     vm.parameters = Parameters;
+    CurrentAssignments =  CurrentAssignments.Items;
+
     //Sort by is a filter on mobile devices
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
     //Check if search was used
     vm.searchResults = Parameters.search && Parameters.search.length > 0;
 
     vm.filter = function(resetPage) {
-        $state.go('productAssignment', ocParameters.Create(vm.parameters, resetPage));
+        $state.go('productAssignmentUpdate', ocParameters.Create(vm.parameters, resetPage));
     };
 
     vm.search = function() {
@@ -66,7 +65,7 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
     }
 
     function changedCheck() {
-         vm.changedAssignments = ocCatalog.Products.CompareAssignments(CurrentAssignments, vm.list, $stateParams.categoryid);
+        vm.changedAssignments = ocCatalog.Products.CompareAssignments(CurrentAssignments, vm.list, $stateParams.categoryid);
     }
 
     selectedCheck();
@@ -92,18 +91,9 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
         selectedCheck();
     };
 
-    vm.addProduct = function(){
-        $state.go('productAssignmentUpdate', ocParameters.Create(vm.parameters, true));
-    };
 
-    vm.removeAssignment = function(scope){
 
-        vm.changedAssignments = [{'old': scope.product}]
-       vm.updateAssignments(true)
-
-    }
-
-    vm.updateAssignments = function(reload) {
+    vm.updateAssignments = function() {
         var setPSQueue=[];
         // go through all the new assignments. add userGroupID
        vm.changedAssignments =  _.map(vm.changedAssignments,(assignment)=>{
@@ -133,9 +123,7 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
                         CurrentAssignments = data.UpdatedAssignments;
                         changedCheck();
                         selectedCheck();
-                        if(reload){
-                            $state.reload();
-                        }
+                        toastr.success('Product assignments updated.');
                     })
           
         })
@@ -176,6 +164,4 @@ function UserGroupProductAssignmentController($q, $exceptionHandler, $state, toa
         }
          
     };
-
-
 }

@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .factory('ocUsers', OrderCloudUsers)
 ;
 
-function OrderCloudUsers($q, $uibModal, ocConfirm, OrderCloudSDK ) {
+function OrderCloudUsers($q, $uibModal, ocConfirm, OrderCloudSDK, impersonationClientId ) {
     var service = {
         Create: _create,
         Edit: _edit,
@@ -47,6 +47,16 @@ function OrderCloudUsers($q, $uibModal, ocConfirm, OrderCloudSDK ) {
                 },
                 SelectedUser: function() {
                     return user;
+                },
+                Addressess: function(){   
+                    let impersonation = {
+                        clientID: impersonationClientId,
+                        roles: [ 'MeAddressAdmin', 'AddressReader', 'BuyerReader', 'BuyerUserAdmin', 'BuyerImpersonation', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'Shopper' ]
+                    };
+                    return OrderCloudSDK.Users.GetAccessToken( buyerid, user.ID, impersonation ).then( ( data ) => {
+                            OrderCloudSDK.SetImpersonationToken( data[ 'access_token' ] );
+                            return OrderCloudSDK.As().Me.ListAddresses()
+                    });
                 }
             }
         }).result;

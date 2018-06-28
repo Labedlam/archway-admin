@@ -32,7 +32,8 @@ function CreateProductPriceModalController($exceptionHandler, $uibModalInstance,
     vm.listAllAssetCollections = function(search) {
         return OrderCloudSDK.UserGroups.List(vm.selectedBuyer.ID, {
             search: search,
-            pageSize: 100
+            pageSize: 100,
+            filters: {'xp.GroupType': 'AssetCollection'}
         })
         .then( data => {
             vm.assetCollections = data;

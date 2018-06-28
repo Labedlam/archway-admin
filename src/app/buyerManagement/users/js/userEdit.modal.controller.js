@@ -3,7 +3,7 @@ angular.module('orderCloud')
 ;
 
 
-function UserEditModalController($exceptionHandler, $uibModalInstance, OrderCloudSDK, SelectedUser, SelectedBuyerID) {
+function UserEditModalController( $q, $exceptionHandler, $uibModalInstance, OrderCloudSDK, SelectedUser, SelectedBuyerID, Addressess) {
     var vm = this;
     vm.user = angular.copy(SelectedUser);
     vm.username = SelectedUser.Username;
@@ -23,14 +23,28 @@ function UserEditModalController($exceptionHandler, $uibModalInstance, OrderClou
         vm.loading = {backdrop:false};
         vm.loading.promise = OrderCloudSDK.Users.Update(SelectedBuyerID, SelectedUser.ID, vm.user)
             .then(function(updatedUser) {
-                    $uibModalInstance.close(updatedUser);
+                    if(vm.user.xp.SAP !== SelectedUser.xp.SAP){
+                        var addressUpdateQueue = [];
+                        _.each(Addressess.Items, (address) => {
+                            addressUpdateQueue.push(OrderCloudSDK.As().Me.PatchAddress(address.ID, {'xp.SAP': vm.user.xp.SAP}))
+                        });
+                        return $q.all(addressUpdateQueue).then(() => vm.close(updatedUser));
+                    }else{
+                        vm.close(updatedUser);
+                    }
+                    
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
     };
+    vm.close = function(sendBack){
+        OrderCloudSDK.RemoveImpersonationToken();
+        $uibModalInstance.close(sendBack);
+    }
 
     vm.cancel = function() {
+        OrderCloudSDK.RemoveImpersonationToken();
         $uibModalInstance.dismiss();
     };
 }

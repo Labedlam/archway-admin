@@ -5,6 +5,7 @@ function UserGroupController($state, $stateParams, toastr, OrderCloudSDK, ocUser
     var vm = this;
     vm.group = SelectedUserGroup;
     vm.model = angular.copy(SelectedUserGroup);
+    vm.regions = ['US', 'CA']
 
     vm.navigationItems = ocNavItems.Filter(ocNavItems.BuyerUserGroup());
 
