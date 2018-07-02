@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .controller('LoginCtrl', LoginController);
 
-function LoginController($state, $exceptionHandler, ocRoles, OrderCloudSDK, scope, clientid, $window) {
+function LoginController($state, $exceptionHandler, ocRoles, OrderCloudSDK, scope, clientid, hostedsiteurl, $window) {
     var vm = this;
     vm.credentials = {
         Username: null,
@@ -34,7 +34,8 @@ function LoginController($state, $exceptionHandler, ocRoles, OrderCloudSDK, scop
     vm.forgotPassword = function () {
         vm.loading = OrderCloudSDK.PasswordResets.SendVerificationCode({
                 Email: vm.credentials.Email,
-                ClientID: clientid
+                ClientID: clientid,
+                URL: hostedsiteurl
             })
             .then(function () {
                 vm.setForm('reset');
