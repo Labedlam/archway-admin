@@ -5,6 +5,9 @@
         <div class="panel panel-default" cg-busy="login.loading">
             <form class="panel-body" name="LoginForm" ng-submit="login.submit()" oc-pretty-submit>
                 <h3 class="text-center">Seller Login</h3>
+                <div class="alert-warning" ng-if="login.loginMessage">
+                    <p class="text-center">{{login.loginMessage}}</p>
+                </div>
                 <div class="form-group">
                     <label for="Username" class="sr-only">Username</label>
                     <input id="Username" type="text" class="form-control" placeholder="Username" autocapitalize="off" autofocus autocorrect="off" autocomplete="off" ng-model="login.credentials.Username" ng-required="true" />
@@ -53,11 +56,6 @@
         <div class="panel panel-default" cg-busy="login.loading">
             <form class="panel-body" name="ResetPasswordForm" ng-submit="login.resetPassword()" oc-pretty-submit>
                 <h3 class="text-center">Reset Password</h3>
-                <div class="alert alert-info">Please check your inbox for an email containing your username and temporary verification code.</div>
-                <div class="form-group">
-                    <label for="ResetVerificationCode" class="sr-only">Verification Code</label>
-                    <input type="text" class="form-control" id="ResetVerificationCode" placeholder="Verification Code" ng-model="login.verificationCode" ng-required="true" />
-                </div>
                 <div class="form-group">
                     <label for="ResetUsername" class="sr-only">Username</label>
                     <input type="text" class="form-control" id="ResetUsername" placeholder="Username" ng-model="login.credentials.ResetUsername" ng-required="true" />

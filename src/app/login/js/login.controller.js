@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .controller('LoginCtrl', LoginController);
 
-function LoginController($state, $exceptionHandler, ocRoles, OrderCloudSDK, scope, clientid, hostedsiteurl, $window) {
+function LoginController($state, $exceptionHandler, $location, hostedsiteurl, ocRoles, OrderCloudSDK, scope, clientid, $window) {
     var vm = this;
     vm.credentials = {
         Username: null,
@@ -9,10 +9,15 @@ function LoginController($state, $exceptionHandler, ocRoles, OrderCloudSDK, scop
     };
     vm.rememberStatus = false;
     vm.form = 'login';
-    vm.setForm = function (form) {
+    
+    vm.verificationCode = $state.params.verificationCode;
+    
+    vm.setForm = function (form) {  
         vm.form = form;
     };
-
+    
+    vm.verificationCode ? vm.setForm( 'reset' ) : vm.setForm( 'login' );
+    
     vm.submit = function () {
         vm.loading = OrderCloudSDK.Auth.Login(vm.credentials.Username, $window.encodeURIComponent(vm.credentials.Password), clientid, scope)
             .then(function (data) {
@@ -35,10 +40,11 @@ function LoginController($state, $exceptionHandler, ocRoles, OrderCloudSDK, scop
         vm.loading = OrderCloudSDK.PasswordResets.SendVerificationCode({
                 Email: vm.credentials.Email,
                 ClientID: clientid,
-                URL: hostedsiteurl
+                URL: hostedsiteurl || $location.absUrl().split( '/login' )[ 0 ]
             })
             .then(function () {
-                vm.setForm('reset');
+                vm.setForm('login');
+                vm.loginMessage = 'An email has been sent to ' + vm.credentials.Email + ' with a link to reset your password';
                 vm.credentials.Email = null;
             })
             .catch(function (ex) {
