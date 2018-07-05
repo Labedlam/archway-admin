@@ -2,11 +2,12 @@ angular.module('orderCloud')
     .controller('UsersCtrl', UsersController)
 ;
 
-function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters, impersonationClientId) {
+function UsersController($state, $stateParams, toastr, ppgbuyerurl, OrderCloudSDK, ocUsers, ocParameters, UserList, Parameters, CurrentUser, impersonationClientId) {
     var vm = this;
     vm.list = UserList;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
+    vm.currentUser = CurrentUser;
 
     //Check if search was used
     vm.searchResults = Parameters.search && Parameters.search.length > 0;
@@ -93,8 +94,18 @@ function UsersController($state, $stateParams, toastr, hostedsiteurl, OrderCloud
         };
         return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)
             .then(function(data) {
-                let buyerAppUrl = `${hostedsiteurl}/punchout?token=${data.access_token}`;
-                window.open(buyerAppUrl, '_blank');
+                let user = {
+                    ID: vm.currentUser.ID,
+                    Name: vm.currentUser.FirstName + '' + vm.currentUser.LastName
+                };
+                let userData = Object.keys(user).map((key) => {
+                    return encodeURIComponent(key) + '=' + encodeURIComponent(user[key]);
+                });
+                if (userData) {
+                    userData.join('&');
+                    let buyerAppUrl = `${ppgbuyerurl}/punchout?token=${data.access_token}user=${userData}`;
+                    window.open(buyerAppUrl, '_blank');
+                }
             });
     };
 }
