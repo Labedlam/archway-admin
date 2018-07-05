@@ -101,6 +101,7 @@ function getConstants() {
             result.apiurl = 'https://api.ordercloud.io';
             result.devapiurl = 'https://archway-ppg.azurewebsites.net/api';
             result.hostedsiteurl = 'https://ppg-admin.herokuapp.com';
+            result.ppgbuyerurl = 'https://ppgadstock.archwayconnect.com';
             result.clientid = '3629A4FF-B049-4B4F-90F8-5734289F1C10';
             result.impersonationClientId = 'fa7f75bc-f89f-4c88-8bd7-06e4bfdca938';
             break;
@@ -109,7 +110,8 @@ function getConstants() {
             result.authurl = 'https://auth.ordercloud.io'; 
             result.apiurl = 'https://api.ordercloud.io'; 
             result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
-            result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com';     
+            result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com';    
+            result.ppgbuyerurl = 'https://archway-ppg-test.azurewebsites.net'; 
             result.clientid = '2493C95E-537A-4066-929E-9D15E7DF613B';
             result.impersonationClientId = '68C34D8F-801F-47F5-9E3B-E8CB7339F209';       
             break;
@@ -118,7 +120,8 @@ function getConstants() {
             result.authurl = 'https://stagingauth.ordercloud.io';
             result.apiurl = 'https://stagingapi.ordercloud.io';
             result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
-            result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com';            
+            result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com';   
+            result.ppgbuyerurl = 'https://archway-ppg-test.azurewebsites.net';         
             result.clientid = '2493C95E-537A-4066-929E-9D15E7DF613B';
             result.impersonationClientId = '68C34D8F-801F-47F5-9E3B-E8CB7339F209';
             break;
@@ -128,6 +131,7 @@ function getConstants() {
             result.apiurl = 'https://api.ordercloud.io';
             result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
             result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com'; 
+            result.ppgbuyerurl = 'https://archway-ppg-test.azurewebsites.net';
             result.clientid = '2493C95E-537A-4066-929E-9D15E7DF613B';
             result.impersonationClientId = '68C34D8F-801F-47F5-9E3B-E8CB7339F209';            
             break;
