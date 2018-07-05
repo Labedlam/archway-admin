@@ -95,33 +95,41 @@ function getConstants() {
     var constants = JSON.parse(fs.readFileSync(source + 'app/app.constants.json'));
     var environment = process.env.environment || constants.environment;
     switch (environment) {
-        case 'local':
-            result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
-            result.authurl = 'http://core.four51.com:11629';
-            result.apiurl = 'http://core.four51.com:9002';
-            result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
-            result.hostedsiteurl = 'https://archway-ppg-test.azurewebsites.net';
+        case 'prod':
+            result.imagestorageurl = 'https://archwayppg.blob.core.windows.net/webimages/';
+            result.authurl = 'https://auth.ordercloud.io';
+            result.apiurl = 'https://api.ordercloud.io';
+            result.devapiurl = 'https://archway-ppg.azurewebsites.net/api';
+            result.hostedsiteurl = 'https://ppg-admin.herokuapp.com';
+            result.clientid = '3629A4FF-B049-4B4F-90F8-5734289F1C10';
+            result.impersonationClientId = 'fa7f75bc-f89f-4c88-8bd7-06e4bfdca938';
             break;
-        case 'qa':
+        case 'test':
             result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
-            result.authurl = 'https://qaauth.ordercloud.io';
-            result.apiurl = 'https://qaapi.ordercloud.io';
+            result.authurl = 'https://auth.ordercloud.io'; 
+            result.apiurl = 'https://api.ordercloud.io'; 
             result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
-            result.hostedsiteurl = 'https://archway-ppg-test.azurewebsites.net';            
+            result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com';     
+            result.clientid = '2493C95E-537A-4066-929E-9D15E7DF613B';
+            result.impersonationClientId = '68C34D8F-801F-47F5-9E3B-E8CB7339F209';       
             break;
         case 'staging':
             result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://stagingauth.ordercloud.io';
             result.apiurl = 'https://stagingapi.ordercloud.io';
             result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
-            result.hostedsiteurl = 'https://archway-ppg-test.azurewebsites.net';            
+            result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com';            
+            result.clientid = '2493C95E-537A-4066-929E-9D15E7DF613B';
+            result.impersonationClientId = '68C34D8F-801F-47F5-9E3B-E8CB7339F209';
             break;
         default:
             result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://auth.ordercloud.io';
             result.apiurl = 'https://api.ordercloud.io';
             result.devapiurl = 'https://archway-ppg-test.azurewebsites.net/api';
-            result.hostedsiteurl = 'https://archway-ppg-test.azurewebsites.net';             
+            result.hostedsiteurl = 'https://ppg-admin-test.herokuapp.com'; 
+            result.clientid = '2493C95E-537A-4066-929E-9D15E7DF613B';
+            result.impersonationClientId = '68C34D8F-801F-47F5-9E3B-E8CB7339F209';            
             break;
     }
     if (process.env.apiurl && process.env.authurl) {
