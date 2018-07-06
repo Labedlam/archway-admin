@@ -448,7 +448,7 @@ function ocProductPricingService($q, $uibModal, OrderCloudSDK, ocConfirm) {
         };
     }
 
-    function _editProductPricePrice(priceSchedule, isDefault) {
+    function _editProductPricePrice(priceSchedule, isDefault, product) {
         return $uibModal.open({
             templateUrl: 'productManagement/pricing/templates/editProductPrice.modal.html',
             controller: 'EditProductPriceModalCtrl',
@@ -459,6 +459,24 @@ function ocProductPricingService($q, $uibModal, OrderCloudSDK, ocConfirm) {
                 },
                 IsDefault: function() {
                     return isDefault;
+                },
+                SelectedProduct: function() {
+                    return product;
+                },
+                ExistingAssignments: function() {
+                    return OrderCloudSDK.Products.ListAssignments({productID: product.ID}).then(assignments => {
+                        let results = _.filter(assignments.Items, assignment => {
+                            if (assignment.UserGroupID) return assignment;
+                        });
+                        let userGroupIDs = _.map(results, 'UserGroupID').join('|');
+                        return OrderCloudSDK.UserGroups.List('ppg', {filters: {ID: userGroupIDs}});
+                    });
+                },
+                AssetCollections: function() {
+                    return OrderCloudSDK.UserGroups.List('ppg', {
+                        pageSize: 100,
+                        filters: {'xp.GroupType': 'AssetCollection'}
+                    });
                 }
             }
         }).result;

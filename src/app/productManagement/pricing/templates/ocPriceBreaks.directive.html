@@ -28,7 +28,7 @@
     <div class="row" ng-form="newBreakForm" autocomplete="off" novalidate>
         <div class="form-group col-xs-5">
             <label for="Quantity">Quantity</label>
-            <input id="Quantity" name="Quantity" ng-keypress="onEnterKeypress($event)" type="number" min="1" ng-max="!priceschedule.RestrictedQuantity ? priceschedule.MaxQuantity : angular.noop()"
+            <input id="Quantity" name="Quantity" ng-keypress="onEnterKeypress($event)" type="number" min="1" ng-max="!priceschedule.RestrictedQuantity ? priceschedule.xp.MaxQuantity : angular.noop()"
                 ng-max-err-type="priceBreakExceedsMaxQuantity" required-err-type="priceBreakRequired" ng-required="!priceschedule.PriceBreaks.length"
                 class="form-control" ng-model="newBreak.Quantity" />
         </div>
