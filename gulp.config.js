@@ -105,7 +105,7 @@ function getConstants() {
             result.clientid = '3629A4FF-B049-4B4F-90F8-5734289F1C10';
             result.impersonationClientId = 'fa7f75bc-f89f-4c88-8bd7-06e4bfdca938';
             break;
-        case 'test':
+        case 'dev':
             result.imagestorageurl = 'https://archwayppgtest.blob.core.windows.net/webimages/';
             result.authurl = 'https://auth.ordercloud.io'; 
             result.apiurl = 'https://api.ordercloud.io'; 
