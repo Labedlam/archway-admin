@@ -33,9 +33,10 @@ function ProductPricingController($state, $rootScope, $stateParams, $uibModal, t
             assignment: vm.listAssignments[_.keys(vm.listAssignments)[0]]
         });
     }
+    
 
     vm.editPrice = function () {
-        ocProductPricing.EditProductPrice(vm.selectedPrice.PriceSchedule, isDefault)
+        ocProductPricing.EditProductPrice(vm.selectedPrice.PriceSchedule, isDefault, vm.product)
             .then(function (updatedPriceSchedule) {
                 if (isDefault && updatedPriceSchedule.ID !== vm.selectedPrice.PriceSchedule.ID) $rootScope.$broadcast('OC:DefaultPriceUpdated', updatedPriceSchedule.ID);
                 var oldAssignment = angular.copy(vm.listAssignments[vm.selectedPrice.PriceSchedule.ID]);
@@ -48,6 +49,7 @@ function ProductPricingController($state, $rootScope, $stateParams, $uibModal, t
                 vm.selectedPrice = oldAssignment;
                 vm.selectedPrice.PriceSchedule = updatedPriceSchedule;
                 toastr.success(vm.selectedPrice.PriceSchedule.Name + ' was updated.');
+                $state.go('product.pricing', {productid: vm.product.ID}, {reload: true});
             });
     };
 

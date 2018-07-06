@@ -40,7 +40,7 @@ function LoginController($state, $exceptionHandler, $location, hostedsiteurl, oc
         vm.loading = OrderCloudSDK.PasswordResets.SendVerificationCode({
                 Email: vm.credentials.Email,
                 ClientID: clientid,
-                URL: hostedsiteurl || $location.absUrl().split( '/login' )[ 0 ]
+                URL: $location.absUrl().split( '/login' )[ 0 ]
             })
             .then(function () {
                 vm.setForm('login');
