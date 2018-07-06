@@ -17,7 +17,7 @@ function OrderCloudSellerUsers($q, $uibModal, ocConfirm, OrderCloudSDK) {
 
     function _create() {
         var queue = {};
-        queue.AdminUG = OrderCloudSDK.AdminUserGroups.List({search: 'archway-admin-group'});
+        queue.AdminUG = OrderCloudSDK.AdminUserGroups.List({filters: {ID: '*admin*'}});
         return $q.all(queue)
             .then(function(info){
                 return $uibModal.open({
