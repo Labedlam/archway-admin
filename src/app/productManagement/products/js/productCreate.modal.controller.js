@@ -89,6 +89,14 @@ function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalIns
         $state.go('sellerAddresses');
     };
 
+    function getKeywords() {
+        //returns an array of keywords
+        return _.map(vm.product.xp.Keywords, function(keyword) {
+            return keyword.text;
+        });
+        
+    }
+
     function submit() {
         var df = $q.defer();
         vm.loading = df.promise;
@@ -109,6 +117,7 @@ function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalIns
         }
 
         function _createProduct() {
+            if (vm.product.xp && vm.product.xp.Keywords.length) vm.product.xp.Keywords = getKeywords();
             if (vm.product.Inventory && !vm.product.Inventory.Enabled) delete vm.product.Inventory;
             OrderCloudSDK.Products.Update(vm.product.ID, vm.product)
                 .then(function (data) {

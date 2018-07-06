@@ -26,8 +26,18 @@ function UserEditModalController( $q, $exceptionHandler, $uibModalInstance, Orde
                     if(vm.user.xp.SAP !== SelectedUser.xp.SAP){
                         var addressUpdateQueue = [];
                         _.each(Addressess.Items, (address) => {
-                            var xp ={SAP: vm.user.xp.SAP};
-                            addressUpdateQueue.push(OrderCloudSDK.As().Me.PatchAddress(address.ID, {xp: xp }))
+                            // if rep user filter out the rep addressses
+                            if(SelectedUser.xp.UserType === 'RepUser'){
+                                if(address.xp.Type === 'Personal' ){
+                                    var xp ={SAP: vm.user.xp.SAP};
+                                    addressUpdateQueue.push(OrderCloudSDK.As().Me.PatchAddress(address.ID, {xp: xp }))
+                                }
+                            }else{
+                                var xp ={SAP: vm.user.xp.SAP};
+                                addressUpdateQueue.push(OrderCloudSDK.As().Me.PatchAddress(address.ID, {xp: xp }))
+                            }
+                          
+                          
                         });
                         return $q.all(addressUpdateQueue).then(() => vm.close(updatedUser));
                     }else{
