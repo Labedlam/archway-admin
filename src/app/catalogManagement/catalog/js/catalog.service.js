@@ -126,7 +126,7 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         return deferred.promise;
     }
     //filters  productAssignment by category. grab category products. compare and return an array of assignmentlist back with product info
-    function _getCategoryProducts( UGProductassignments , catalogid, categoryid ){
+    function _getCategoryProducts( UGProductassignments, catalogid, categoryid ){
         var queue=[];
        
         var assignments = [];
@@ -153,9 +153,9 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                 });
 
                  _.each( UGProductassignments, (ugAssignment) =>{
-                    var match =  _.find( assignments, (assignment) => assignment.ProductID === ugAssignment.ProductID )
+                    var match =  _.find( assignments, (assignment) => assignment.ProductID === ugAssignment.ProductID );
                     if (match) categoryAssignments.push(match);
-                } ) 
+                } ); 
 
                 _.each( categoryAssignments, (assignment )=> {
                     queue.push( function(){
@@ -163,10 +163,10 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                             .then((product)=>{
                                 return assignment.Product = product;
                             });
-                    }())
+                    }());
                 });
 
-                 return $q.all(queue).then(()=> {return {Items: categoryAssignments }} );
+                 return $q.all(queue).then(()=> {return {Items: categoryAssignments };} );
                 });
             });
     }
@@ -218,13 +218,13 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                    if(userGroupID){
                     OrderCloudSDK.Products.SaveAssignment(diff.new)
                     .then(function() {
-                        var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID }
+                        var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
                         OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
                         .then(()=>{
                              //create new category assignment
                             allAssignments.push(diff.new); //add the new assignment to the assignment list
                             d.resolve();
-                        })
+                        });
                      
                     })
                     .catch(function(ex) {
@@ -232,7 +232,8 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                         d.resolve();
                     });
                    }else{
-                    OrderCloudSDK.Categories.SaveProductAssignment(catalogid, diff.new) //create new category assignment
+                    //create new category assignment
+                    OrderCloudSDK.Categories.SaveProductAssignment(catalogid, diff.new) 
                         .then(function() {
                             allAssignments.push(diff.new); //add the new assignment to the assignment list
                             d.resolve();
