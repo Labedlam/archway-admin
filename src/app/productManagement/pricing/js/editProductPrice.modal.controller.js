@@ -42,7 +42,7 @@ function EditProductPriceModalController($q, $uibModalInstance, OrderCloudSDK, S
         var deleteQueue = [];
 
         angular.forEach(current, function (price, quantity) {
-            if (!previous[quantity] || (previous[quantity] && previous[quantity] !== price)) {
+            if (previous[quantity] === undefined || previous[quantity] === null || (previous[quantity] && previous[quantity] !== price)) {
                 createQueue.push(OrderCloudSDK.PriceSchedules.SavePriceBreak(SelectedPriceSchedule.ID, {
                     Quantity: quantity,
                     Price: price
@@ -51,7 +51,7 @@ function EditProductPriceModalController($q, $uibModalInstance, OrderCloudSDK, S
         });
 
         angular.forEach(previous, function (price, quantity) {
-            if (!current[quantity]) deleteQueue.push(OrderCloudSDK.PriceSchedules.DeletePriceBreak(SelectedPriceSchedule.ID, quantity));
+            if (!current[quantity] && current[quantity] !== 0) deleteQueue.push(OrderCloudSDK.PriceSchedules.DeletePriceBreak(SelectedPriceSchedule.ID, quantity));
         });
 
         if (vm.deleteQueue.length) {
