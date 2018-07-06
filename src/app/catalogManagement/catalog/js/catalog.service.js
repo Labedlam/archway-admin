@@ -214,42 +214,17 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         angular.forEach(changedAssignments, function(diff) {
             if (!diff.old && diff.new) {
                 assignmentQueue.push((function() {
-                    var d = $q.defer();
-                   if(userGroupID){
-                    OrderCloudSDK.Products.SaveAssignment(diff.new)
-                    .then(function() {
-                        var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
-                        OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
-                        .then(()=>{
-                             //create new category assignment
-                            allAssignments.push(diff.new); //add the new assignment to the assignment list
-                            d.resolve();
-                        });
-                     
-                    })
-                    .catch(function(ex) {
-                        errors.push(ex);
+                var d = $q.defer();
+                var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
+                OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
+                    .then(()=>{
+                        //create new category assignment
+                        allAssignments.push(diff.new); //add the new assignment to the assignment list
                         d.resolve();
                     });
-                   }else{
-                    //create new category assignment
-                    OrderCloudSDK.Categories.SaveProductAssignment(catalogid, diff.new) 
-                        .then(function() {
-                            allAssignments.push(diff.new); //add the new assignment to the assignment list
-                            d.resolve();
-                        })
-                        .catch(function(ex) {
-                            errors.push(ex);
-                            d.resolve();
-                        });
-
-                    
-                   }
                    return d.promise;
-                  
                 })());
-            }
-            else if (diff.old && !diff.new) {
+            } else if (diff.old && !diff.new) {
                 assignmentQueue.push((function() {
                     var d = $q.defer();
                     if(userGroupID){
@@ -266,8 +241,7 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                             errors.push(ex);
                             d.resolve();
                         });
-                    }
-                    else{
+                    } else {
                         OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
                         .then(function() {
                             allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
