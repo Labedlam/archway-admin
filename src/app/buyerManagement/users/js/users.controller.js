@@ -90,7 +90,7 @@ function UsersController($state, $stateParams, toastr, ppgbuyerurl, OrderCloudSD
     vm.impersonateUser = function(scope) {
         let impersonation = {
             clientID: impersonationClientId,
-            roles: ['AddressReader', 'BuyerReader', 'BuyerUserReader', 'MeAddressAdmin', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'Shopper']
+            roles: ['AddressReader', 'BuyerReader', 'BuyerUserReader', 'BuyerImpersonation', 'MeAddressAdmin', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'Shopper']
         };
         return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)
             .then(function(data) {
