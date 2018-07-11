@@ -8,6 +8,13 @@ function CreateCategoryModalController($exceptionHandler, $uibModalInstance, Ord
     vm.category.ParentID = ParentID;
     vm.category.Active = true;
     vm.catalogid = CatalogID;
+    vm.chipGridSections = [
+        {
+            Name: null,
+            Columns: 0
+        }
+    ];
+    vm.step = 1;
 
     vm.fileUploadOptions = {
         keyname: 'image',
@@ -20,16 +27,31 @@ function CreateCategoryModalController($exceptionHandler, $uibModalInstance, Ord
         $uibModalInstance.dismiss();
     };
 
-    vm.submit = function() {
+    vm.submit = function(gridSection) {
         if (vm.category.ParentID === '') {
             vm.category.ParentID = null;
         }
-        vm.loading = OrderCloudSDK.Categories.Create(vm.catalogid, vm.category)
+        let categoryBody = gridSection ? gridSection : vm.category;
+        vm.loading = OrderCloudSDK.Categories.Create(vm.catalogid, categoryBody)
             .then(function(category) {
-                $uibModalInstance.close(category);
+                if (vm.category.xp.IsChipGrid && vm.chipGridSections[0].Name && vm.chipGridSections[0].Columns) {
+                    _.each(vm.chipGridSections, section => {
+                        section.ParentID = vm.category.ID;
+                        section.xp = {
+                            Columns: section.Columns
+                        };
+                        vm.submit(section);
+                    });
+                } else {
+                    $uibModalInstance.close(category);
+                }
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
+    };
+
+    vm.switchSections = function() {
+        vm.step === 1 ? vm.step ++ : vm.step--; 
     };
 }
