@@ -34,16 +34,22 @@ function CreateCategoryModalController($exceptionHandler, $uibModalInstance, Ord
         let categoryBody = gridSection ? gridSection : vm.category;
         vm.loading = OrderCloudSDK.Categories.Create(vm.catalogid, categoryBody)
             .then(function(category) {
-                if (vm.category.xp.IsChipGrid && vm.chipGridSections[0].Name && vm.chipGridSections[0].Columns) {
+                if (vm.category.xp.IsChipGrid && vm.chipGridSections.length) {
                     _.each(vm.chipGridSections, section => {
-                        section.ParentID = vm.category.ID;
-                        section.xp = {
-                            Columns: section.Columns
+                        let chipGridSection = {
+                            ParentID: vm.category.ID,
+                            ID: section.Name.replace(/ /g, ''),
+                            Name: section.Name,
+                            Active: true,
+                            xp: {
+                                Columns: section.Columns
+                            }
                         };
-                        vm.submit(section);
+                        vm.chipGridSections.shift();
+                        vm.submit(chipGridSection);
                     });
                 } else {
-                    $uibModalInstance.close(category);
+                    $uibModalInstance.close(vm.category);
                 }
             })
             .catch(function(ex) {
@@ -53,5 +59,16 @@ function CreateCategoryModalController($exceptionHandler, $uibModalInstance, Ord
 
     vm.switchSections = function() {
         vm.step === 1 ? vm.step ++ : vm.step--; 
+    };
+
+    vm.changeSectionCount = function(action, index) {
+        if (action === 'add') {
+            vm.chipGridSections.push({
+                Name: null,
+                Columns: 0
+            });
+        } else {
+            vm.chipGridSections.splice(index, 1);
+        }
     };
 }
