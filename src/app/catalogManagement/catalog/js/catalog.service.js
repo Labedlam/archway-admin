@@ -214,19 +214,15 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         angular.forEach(changedAssignments, function(diff) {
             if (!diff.old && diff.new) {
                 assignmentQueue.push((function() {
-                var d = $q.defer();
                 var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
                 OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
                     .then(()=>{
                         //create new category assignment
                         allAssignments.push(diff.new); //add the new assignment to the assignment list
-                        d.resolve();
                     });
-                   return d.promise;
                 })());
             } else if (diff.old && !diff.new) {
                 assignmentQueue.push((function() {
-                    var d = $q.defer();
                     if(userGroupID){
                         OrderCloudSDK.Products.DeleteAssignment(diff.old.ProductID, buyerID, {userGroupID: diff.old.UserGroupID})
                         .then(function() {
@@ -234,27 +230,20 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                             // OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
                             // .then(function() {
                                 allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
-                                d.resolve();
                             // })
                         })
                         .catch(function(ex) {
                             errors.push(ex);
-                            d.resolve();
                         });
                     } else {
                         OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
                         .then(function() {
                             allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
-                            d.resolve();
                         })
                         .catch(function(ex) {
                             errors.push(ex);
-                            d.resolve();
                         });
-
-                   
                     }
-                    return d.promise;
                 })());
             }
         });
