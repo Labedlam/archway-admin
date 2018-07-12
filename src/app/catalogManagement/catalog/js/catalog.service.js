@@ -214,36 +214,22 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         angular.forEach(changedAssignments, function(diff) {
             if (!diff.old && diff.new) {
                 assignmentQueue.push((function() {
-                var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
-                OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
-                    .then(()=>{
-                        //create new category assignment
-                        allAssignments.push(diff.new); //add the new assignment to the assignment list
-                    });
+                    var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
+                    OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
+                        .then(()=>{
+                            //create new category assignment
+                            allAssignments.push(diff.new); //add the new assignment to the assignment list
+                        });
                 })());
             } else if (diff.old && !diff.new) {
                 assignmentQueue.push((function() {
-                    if(userGroupID){
-                        OrderCloudSDK.Products.DeleteAssignment(diff.old.ProductID, buyerID, {userGroupID: diff.old.UserGroupID})
-                        .then(function() {
-                            //TODO:if a product is assigned to more than one ug,check to see that this is the last assignment before deleting this assignment.
-                            // OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
-                            // .then(function() {
-                                allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
-                            // })
-                        })
-                        .catch(function(ex) {
-                            errors.push(ex);
-                        });
-                    } else {
-                        OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
+                    OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
                         .then(function() {
                             allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
                         })
                         .catch(function(ex) {
                             errors.push(ex);
                         });
-                    }
                 })());
             }
         });
