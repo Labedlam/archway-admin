@@ -59,7 +59,7 @@ function ProductController($exceptionHandler, $rootScope, $state, toastr, images
         var partial = _.pick(vm.model, ['ID', 'Name', 'Description', 'QuantityMultiplier', 'Inventory', 'Active']);
         var partialXP = _.pick(vm.model.xp, ['Featured', 'ApprovalRequired', 'Brand', 'Keywords', 'Comments', 'UnitOfMeasure', 'Images']);
         partial.xp = partialXP;
-        if(vm.keywords.length) partial.xp.Keywords = getKeywords();
+        partial.xp.Keywords = getKeywords();
         
         vm.loading = OrderCloudSDK.Products.Patch(SelectedProduct.ID, partial)
             .then(function (data) {
