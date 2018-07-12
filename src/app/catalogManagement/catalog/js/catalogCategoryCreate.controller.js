@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .controller('CreateCategoryModalCtrl', CreateCategoryModalController)
 ;
 
-function CreateCategoryModalController($exceptionHandler, $uibModalInstance, OrderCloudSDK, ParentID, CatalogID){
+function CreateCategoryModalController($exceptionHandler, $q, $uibModalInstance, OrderCloudSDK, ParentID, CatalogID){
     var vm = this;
     vm.category = {xp:{}};
     vm.category.ParentID = ParentID;
@@ -27,34 +27,42 @@ function CreateCategoryModalController($exceptionHandler, $uibModalInstance, Ord
         $uibModalInstance.dismiss();
     };
 
-    vm.submit = function(gridSection) {
+    vm.submit = function() {
         if (vm.category.ParentID === '') {
             vm.category.ParentID = null;
         }
-        let categoryBody = gridSection ? gridSection : vm.category;
-        vm.loading = OrderCloudSDK.Categories.Create(vm.catalogid, categoryBody)
-            .then(function(category) {
-                if (vm.category.xp.IsChipGrid && vm.chipGridSections.length) {
-                    _.each(vm.chipGridSections, section => {
-                        let chipGridSection = {
-                            ParentID: vm.category.ID,
-                            ID: section.Name.replace(/ /g, ''),
-                            Name: section.Name,
-                            Active: true,
-                            xp: {
-                                Columns: section.Columns
-                            }
-                        };
-                        vm.chipGridSections.shift();
-                        vm.submit(chipGridSection);
-                    });
-                } else {
+        
+        function createCategory(categoryBody) {
+            return OrderCloudSDK.Categories.Create(vm.catalogid, categoryBody)
+                .catch(function(ex) {
+                    $exceptionHandler(ex);
+                });
+        }
+        
+        return createCategory(vm.category).then(categoryData => {
+            let createQueue = [];
+            if (vm.category.xp.IsChipGrid && vm.chipGridSections.length) {
+                _.each(vm.chipGridSections, (section, key) => {
+                    let listOrder = key + 1;
+                    let chipGridSection = {
+                        ParentID: vm.category.ID,
+                        ID: `${section.Name.replace(/ /g, '')}_${vm.category.ID}`,
+                        Name: section.Name,
+                        Active: true,
+                        ListOrder: listOrder,
+                        xp: {
+                            Columns: section.Columns
+                        }
+                    };
+                    createQueue.push(createCategory(chipGridSection));
+                });
+                return $q.all(createQueue).then(() => {
                     $uibModalInstance.close(vm.category);
-                }
-            })
-            .catch(function(ex) {
-                $exceptionHandler(ex);
-            });
+                });
+            } else {
+               $uibModalInstance.close(vm.category);
+            }
+        });
     };
 
     vm.switchSections = function() {

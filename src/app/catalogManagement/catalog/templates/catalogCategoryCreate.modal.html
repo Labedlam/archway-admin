@@ -71,7 +71,7 @@
                     <input id="categoryNameInput" type="number" class="form-control" ng-model="section.Columns" required/>
                 </div>
                 <div class="col-sm-1" style="padding: 5px 3px 0 0">
-                    <button class="btn btn-xs btn-danger" ng-if="$index > 0" type="number" class="form-control"ng-click="createCategory.changeSectionCount('remove', $index)"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-xs btn-danger" ng-if="$index > 0" type="button" class="form-control" ng-click="createCategory.changeSectionCount('remove', $index)"><i class="fa fa-times"></i></button>
                 </div>
             </fieldset>
             <fieldset class="form-group">
