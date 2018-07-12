@@ -2,12 +2,13 @@ angular.module('orderCloud')
     .controller('EditCategoryModalCtrl', EditCategoryModalController)
 ;
 
-function EditCategoryModalController($exceptionHandler, $uibModalInstance, OrderCloudSDK, SelectedCategory, CatalogID){
+function EditCategoryModalController($exceptionHandler, $uibModalInstance, OrderCloudSDK, SelectedCategory, CatalogID, IsChipSection){
     var vm = this;
     vm.category = angular.copy(SelectedCategory);
     if (!vm.category.xp) vm.category.xp = {};
     vm.categoryName = SelectedCategory.Name;
     vm.catalogid = CatalogID;
+    vm.isChipSection = IsChipSection;
 
     vm.fileUploadOptions = {
         keyname: 'image',
