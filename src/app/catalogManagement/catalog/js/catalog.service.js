@@ -59,6 +59,12 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
                 },
                 CatalogID: function() {
                     return catalogid;
+                },
+                IsChipSection: function() {
+                    if (!category.ParentID) return;
+                    return OrderCloudSDK.Categories.Get(catalogid, category.ParentID).then( parentCategory => {
+                        return parentCategory.xp && parentCategory.xp.IsChipGrid;
+                    });
                 }
             }
         }).result;
@@ -214,47 +220,22 @@ function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
         angular.forEach(changedAssignments, function(diff) {
             if (!diff.old && diff.new) {
                 assignmentQueue.push((function() {
-                var d = $q.defer();
-                var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
-                OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
-                    .then(()=>{
-                        //create new category assignment
-                        allAssignments.push(diff.new); //add the new assignment to the assignment list
-                        d.resolve();
-                    });
-                   return d.promise;
+                    var categoryAssignment = {CategoryID: diff.new.CategoryID, ProductID: diff.new.ProductID };
+                    OrderCloudSDK.Categories.SaveProductAssignment(catalogid, categoryAssignment)
+                        .then(()=>{
+                            //create new category assignment
+                            allAssignments.push(diff.new); //add the new assignment to the assignment list
+                        });
                 })());
             } else if (diff.old && !diff.new) {
                 assignmentQueue.push((function() {
-                    var d = $q.defer();
-                    if(userGroupID){
-                        OrderCloudSDK.Products.DeleteAssignment(diff.old.ProductID, buyerID, {userGroupID: diff.old.UserGroupID})
-                        .then(function() {
-                            //TODO:if a product is assigned to more than one ug,check to see that this is the last assignment before deleting this assignment.
-                            // OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
-                            // .then(function() {
-                                allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
-                                d.resolve();
-                            // })
-                        })
-                        .catch(function(ex) {
-                            errors.push(ex);
-                            d.resolve();
-                        });
-                    } else {
-                        OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
+                    OrderCloudSDK.Categories.DeleteProductAssignment(catalogid, diff.old.CategoryID, diff.old.ProductID)
                         .then(function() {
                             allAssignments.splice(allAssignments.indexOf(diff.old), 1); //remove the old assignment from the assignment list
-                            d.resolve();
                         })
                         .catch(function(ex) {
                             errors.push(ex);
-                            d.resolve();
                         });
-
-                   
-                    }
-                    return d.promise;
                 })());
             }
         });
