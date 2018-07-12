@@ -88,24 +88,42 @@ function UsersController($state, $stateParams, toastr, ppgbuyerurl, OrderCloudSD
     };
 
     vm.impersonateUser = function(scope) {
-        let impersonation = {
-            clientID: impersonationClientId,
-            roles: ['AddressReader', 'BuyerReader', 'BuyerUserReader', 'BuyerImpersonation', 'MeAddressAdmin', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'Shopper']
-        };
-        return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)
-            .then(function(data) {
-                let user = {
-                    ID: vm.currentUser.ID,
-                    Name: vm.currentUser.FirstName + '' + vm.currentUser.LastName
-                };
-                let userData = Object.keys(user).map((key) => {
-                    return encodeURIComponent(key) + '=' + encodeURIComponent(user[key]);
+        return getImpersonation(scope.user)
+            .then((impersonation)=>{
+                return OrderCloudSDK.Users.GetAccessToken($stateParams.buyerid, scope.user.ID, impersonation)
+                .then(function(data) {
+                    let user = {
+                        ID: vm.currentUser.ID,
+                        Name: vm.currentUser.FirstName + '' + vm.currentUser.LastName
+                    };
+                    let userData = Object.keys(user).map((key) => {
+                        return encodeURIComponent(key) + '=' + encodeURIComponent(user[key]);
+                    });
+                    if (userData) {
+                        userData.join('&');
+                        let buyerAppUrl = `${ppgbuyerurl}/punchout?token=${data.access_token}user=${userData}`;
+                        window.open(buyerAppUrl, '_blank');
+                    }
                 });
-                if (userData) {
-                    userData.join('&');
-                    let buyerAppUrl = `${ppgbuyerurl}/punchout?token=${data.access_token}user=${userData}`;
-                    window.open(buyerAppUrl, '_blank');
-                }
-            });
+            } );
+       
     };
+
+    // this is to ensure that the admin-limited user does not get more roles than they need
+    function getImpersonation(userBeingImpersonated){
+        return OrderCloudSDK.Users.Get($stateParams.buyerid, userBeingImpersonated.ID)
+            .then((user)=>{
+                //if user does not have this role they are a limited user
+               let isLimitedAdmin = user.AvailableRoles.indexOf('BuyerUserAdmin') < 0;
+                let impersonation = {
+                    clientID: impersonationClientId
+                }
+                if(isLimitedAdmin){
+                    impersonation.roles = ['AddressReader', 'BuyerReader', 'BuyerUserReader', 'BuyerImpersonation', 'MeAddressAdmin', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'OrderAdmin','Shopper', 'ShipmentReader'];
+                }else{
+                    impersonation.roles =['AddressReader', 'BuyerReader', 'BuyerUserReader', 'BuyerUserAdmin', 'BuyerImpersonation', 'MeAddressAdmin', 'MeAdmin', 'MeXpAdmin', 'OrderReader', 'OrderAdmin','Shopper', 'UserGroupAdmin', 'UserGroupReader', 'ShipmentAdmin', 'ShipmentReader']
+                } 
+                return impersonation;
+            })
+    }
 }
