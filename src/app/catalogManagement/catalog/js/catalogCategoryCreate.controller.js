@@ -2,12 +2,13 @@ angular.module('orderCloud')
     .controller('CreateCategoryModalCtrl', CreateCategoryModalController)
 ;
 
-function CreateCategoryModalController($exceptionHandler, $q, $uibModalInstance, OrderCloudSDK, ParentID, CatalogID){
+function CreateCategoryModalController($exceptionHandler, $q, $uibModalInstance, OrderCloudSDK, ParentID, CatalogID, buyerid){
     var vm = this;
     vm.category = {xp:{}};
     vm.category.ParentID = ParentID;
     vm.category.Active = true;
     vm.catalogid = CatalogID;
+    vm.buyerid = buyerid;
     vm.chipGridSections = [
         {
             Name: null,
@@ -38,6 +39,16 @@ function CreateCategoryModalController($exceptionHandler, $q, $uibModalInstance,
                     $exceptionHandler(ex);
                 });
         }
+
+        function assignClientAdmin(category) {
+            return OrderCloudSDK.Categories.SaveAssignment(vm.catalogid, {
+                CategoryID: category.ID,
+                BuyerID: vm.buyerid,
+                UserGroupID: 'client-admin',
+                Visible: true,
+                ViewAllProducts: true
+            });
+        }
         
         return createCategory(vm.category).then(categoryData => {
             let createQueue = [];
@@ -57,10 +68,14 @@ function CreateCategoryModalController($exceptionHandler, $q, $uibModalInstance,
                     createQueue.push(createCategory(chipGridSection));
                 });
                 return $q.all(createQueue).then(() => {
-                    $uibModalInstance.close(vm.category);
+                    return assignClientAdmin(vm.category).then( ()=> {
+                        $uibModalInstance.close(vm.category);
+                    });
                 });
             } else {
-               $uibModalInstance.close(vm.category);
+                return assignClientAdmin(vm.category).then( ()=> {
+                    $uibModalInstance.close(vm.category);
+                });
             }
         });
     };

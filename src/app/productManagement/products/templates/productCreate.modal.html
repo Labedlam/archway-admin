@@ -82,11 +82,11 @@
             <fieldset class="text-center">
                 <div class="checkbox">
                     <label for="DefaultPriceEnabled">
-                        <input id="DefaultPriceEnabled" disable-validation-message name="DefaultPriceEnabled" type="checkbox" ng-change="productCreateModal.validatePricingForm()" ng-model="productCreateModal.enableDefaultPricing"> Set a Default Price
+                        <input id="DefaultPriceEnabled" disable-validation-message name="DefaultPriceEnabled" type="checkbox" ng-change="productCreateModal.validatePricingForm()" ng-model="productCreateModal.clientAdminPricing"> Set a Client Admin Price
                     </label>
                 </div>
             </fieldset>
-            <div ng-if="productCreateModal.enableDefaultPricing">
+            <div ng-if="productCreateModal.clientAdminPricing">
                 <div class="form-horizontal">
                     <fieldset class="form-group">
                         <label for="MinQuantity" class="col-sm-3 control-label">Min Quantity</label>
@@ -242,9 +242,9 @@
             </div>
             <div ng-class="{'col-xs-6':productCreateModal.showPrev}">
                 <button type="button" ng-if="productCreateModal.showNext" class="btn btn-primary btn-block" 
-                ng-disabled="productCreateModal.form[productCreateModal.steps[productCreateModal.currentStep].form].$invalid || (productCreateModal.steps[productCreateModal.currentStep].form == 'pricing' && (productCreateModal.enableDefaultPricing && !productCreateModal.product.DefaultPriceSchedule.PriceBreaks.length))"
+                ng-disabled="productCreateModal.form[productCreateModal.steps[productCreateModal.currentStep].form].$invalid || (productCreateModal.steps[productCreateModal.currentStep].form == 'pricing' && (productCreateModal.clientAdminPricing && !productCreateModal.product.DefaultPriceSchedule.PriceBreaks.length))"
                     ng-click="productCreateModal.nextStep()">Next ({{productCreateModal.steps[productCreateModal.currentStep + 1].name}})</button>
-                <button ng-if="!productCreateModal.showNext" type="submit" cg-busy="productCreateModal.productUpdateLoading" ng-disabled="productCreateModal.form.$invalid || (productCreateModal.enableDefaultPricing && !productCreateModal.product.DefaultPriceSchedule.PriceBreaks.length)"
+                <button ng-if="!productCreateModal.showNext" type="submit" cg-busy="productCreateModal.productUpdateLoading" ng-disabled="productCreateModal.form.$invalid || (productCreateModal.clientAdminPricing && !productCreateModal.product.DefaultPriceSchedule.PriceBreaks.length)"
                     class="btn btn-primary btn-block">Save Product</button>
             </div>
         </div>

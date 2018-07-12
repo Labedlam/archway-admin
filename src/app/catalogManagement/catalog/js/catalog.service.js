@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .factory('ocCatalog', OrderCloudCatalog)
 ;
 
-function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm) {
+function OrderCloudCatalog($q, $uibModal, OrderCloudSDK, ocConfirm, buyerid, catalogid) {
     var service = {
         CreateCategory: _createCategory,
         EditCategory: _editCategory,

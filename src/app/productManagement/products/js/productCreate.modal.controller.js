@@ -1,15 +1,18 @@
 angular.module('orderCloud')
     .controller('ProductCreateModalCtrl', ProductCreateModalController);
 
-function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalInstance, $state, imagestorageurl, devapiurl, OrderCloudSDK) {
-    var vm = this;   
+function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalInstance, $state, imagestorageurl, devapiurl, OrderCloudSDK, catalogid, buyerid) {
+    var vm = this;
+    vm.catalogID = catalogid;
+    vm.buyerID = buyerid;
 
     vm.product = {
         DefaultPriceSchedule: {
             RestrictedQuantity: false,
             PriceBreaks: [],
             MinQuantity: 1,
-            OrderType: 'Standard'
+            OrderType: 'Standard',
+            xp: {}
         },
         xp: {
             Images: []
@@ -26,18 +29,31 @@ function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalIns
             name: 'Default Pricing'
         },
         {
-            form: 'shipping',
-            name: 'Shipping Information'
-        },
-        {
-            form: 'inventory',
-            name: 'Product Inventory'
-        },
-        {
             form: 'image',
             name: 'Product Image'
         }
     ];
+    // vm.steps = [{
+    //         form: 'info',
+    //         name: 'Basic Information'
+    //     },
+    //     {
+    //         form: 'pricing',
+    //         name: 'Default Pricing'
+    //     },
+    //     {
+    //         form: 'shipping',
+    //         name: 'Shipping Information'
+    //     },
+    //     {
+    //         form: 'inventory',
+    //         name: 'Product Inventory'
+    //     },
+    //     {
+    //         form: 'image',
+    //         name: 'Product Image'
+    //     }
+    // ];
     vm.currentStep = 0;
     vm.showNext = true;
     vm.initialized = true;
@@ -101,31 +117,40 @@ function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalIns
         var df = $q.defer();
         vm.loading = df.promise;
 
-        if (vm.enableDefaultPricing) {
+        if (vm.clientAdminPricing) {
             var priceSchedule = angular.copy(vm.product.DefaultPriceSchedule);
-            priceSchedule.Name = vm.product.Name + ' Default Price';
-            OrderCloudSDK.PriceSchedules.Create(priceSchedule)
+            priceSchedule.Name = vm.product.Name + ' ' + priceSchedule.xp.Currency;
+            return OrderCloudSDK.PriceSchedules.Create(priceSchedule)
                 .then(function (data) {
-                    vm.product.DefaultPriceScheduleID = data.ID;
-                    _createProduct();
+                    return _createProduct().then(newProduct => {
+                        return _assignToCatalog(newProduct).then( () => {
+                            return _assignToClientAdmin(newProduct, data).then( () => {
+                                $uibModalInstance.close(newProduct);
+                            });
+                        });
+                    });
                 })
                 .catch(function (ex) {
                     $exceptionHandler(ex);
                 });
         } else {
-            _createProduct();
+            return _createProduct().then(newProduct => {
+                return _assignToCatalog(newProduct).then( () => {
+                    $uibModalInstance.close(newProduct);
+                });
+            });
         }
 
         function _createProduct() {
             if (vm.product.xp && vm.product.xp.Keywords.length) vm.product.xp.Keywords = getKeywords();
             if (vm.product.Inventory && !vm.product.Inventory.Enabled) delete vm.product.Inventory;
-            OrderCloudSDK.Products.Update(vm.product.ID, vm.product)
-                .then(function (data) {
+            return OrderCloudSDK.Products.Update(vm.product.ID, vm.product)
+                .then(function (newProduct) {
                     if (vm.product.Image) {
                         let formBody = new FormData();
                         formBody.append('imageUpload', vm.product.Image, vm.product.Image.name);
                         return $http({
-                            url: `${devapiurl}/productimage/${data.ID}`,
+                            url: `${devapiurl}/productimage/${newProduct.ID}`,
                             method: 'POST',
                             data: formBody,
                             headers: {
@@ -133,13 +158,29 @@ function ProductCreateModalController($q, $http, $exceptionHandler, $uibModalIns
                                 'Content-Type': undefined
                             }
                         }).then(data => {
-                            return $uibModalInstance.close(data.data);
+                            return data.Data;
                         });
                     } else {
-                        $uibModalInstance.close(data);
+                        return newProduct;
+                        
                     }
-                });
-            
+                });   
+        }
+
+        function _assignToCatalog(product) {
+            return OrderCloudSDK.Catalogs.SaveProductAssignment({
+                CatalogID: vm.catalogID,
+                ProductID: product.ID
+            });
+        }
+
+        function _assignToClientAdmin(product, priceSchedule) {
+            return OrderCloudSDK.Products.SaveAssignment({
+                ProductID: product.ID,
+                BuyerID: vm.buyerID,
+                UserGroupID: 'client-admin',
+                PriceScheduleID: priceSchedule.ID
+            });
         }
     }
 
